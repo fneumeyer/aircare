@@ -9,7 +9,7 @@
   "authentication": {
     "entity": "user",
     "service": "users",
-    "secret": "fkf9pJUmTaeKY0oCZmFICz/e98M=",
+    "secret": "+XJo0mpuASSknocM5cXYrLiSxtE=",
     "authStrategies": [
       "jwt",
       "local"
@@ -28,5 +28,5 @@
       "passwordField": "password"
     }
   },
-  "nedb": "../data"
+  "mongodb": "mongodb://localhost:27017/aircare"
 }

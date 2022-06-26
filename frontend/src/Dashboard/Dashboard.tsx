@@ -1,3 +1,4 @@
+import { Grid, Typography } from '@mui/material'
 import React from 'react'
 
 type Props = {
@@ -5,5 +6,8 @@ type Props = {
 }
 
 export function Dashboard(props: Props){
-  return <h1>AirCare Dashboard</h1>
+  return <>
+    <Typography variant="h2">Task Overview</Typography>
+    <Grid></Grid>
+  </>
 }

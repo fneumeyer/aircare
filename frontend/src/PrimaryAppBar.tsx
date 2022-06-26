@@ -16,6 +16,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { useAuth } from './Authentication/useAuth';
+import logo from './assets/images/aircare-logo.png';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -171,14 +172,16 @@ export function PrimaryAppBar() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography
+          
+          {/*<Typography
             variant="h6"
             noWrap
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' } }}
           >
             AirCare
-          </Typography>
+          </Typography>*/}
+          <img src={logo} alt="AirCare Logo" style={{maxHeight: '50px'}}/>
           <Box sx={{ flexGrow: 1 }} />
           
           {authState.authenticated && <Box sx={{ display: { xs: 'none', md: 'flex' } }}>

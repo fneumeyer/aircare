@@ -18,6 +18,7 @@ import appHooks from './app.hooks';
 import channels from './channels';
 import { HookContext as FeathersHookContext } from '@feathersjs/feathers';
 import authentication from './authentication';
+import mongoose from './mongoose';
 // Don't remove this comment. It's needed to format import lines nicely.
 
 const app: Application = express(feathers());
@@ -40,6 +41,8 @@ app.use('/', express.static(app.get('public')));
 // Set up Plugins and providers
 app.configure(express.rest());
 app.configure(socketio());
+
+app.configure(mongoose);
 
 // Configure other middleware (see `middleware/index.ts`)
 app.configure(middleware);

@@ -10,7 +10,7 @@
   ],
   "author": {
     "name": "Felix Neumeyer",
-    "email": "felix.neumeyer@ablacon.com"
+    "email": "felix@neumeyer.it"
   },
   "contributors": [],
   "bugs": {},
@@ -48,13 +48,13 @@
     "@feathersjs/feathers": "^4.5.15",
     "@feathersjs/socketio": "^4.5.15",
     "@feathersjs/transport-commons": "^4.5.15",
-    "@seald-io/nedb": "^3.0.0",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
-    "feathers-nedb": "^6.0.0",
+    "feathers-mongoose": "^8.5.1",
     "helmet": "^5.1.0",
+    "mongodb-core": "^3.2.7",
+    "mongoose": "^6.3.6",
     "serve-favicon": "^2.5.0",
-    "socket.io-parser": "^4.2.0",
     "winston": "^3.0.0"
   },
   "devDependencies": {
