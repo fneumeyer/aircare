@@ -5,7 +5,10 @@ import { BrowserRouter } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 import { Routing } from './Routing';
 import { PrimaryAppBar } from './PrimaryAppBar';
-
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
 
 const theme = createTheme({
   palette: {
@@ -19,7 +22,7 @@ function App() {
     <RecoilRoot>
       <ThemeProvider theme={theme}>
         <PrimaryAppBar />
-        <Container maxWidth="md">
+        <Container>
           <BrowserRouter>
             <Routing />
           </BrowserRouter>

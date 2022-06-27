@@ -9,6 +9,7 @@
     "@feathersjs/authentication-client": "^4.5.15",
     "@feathersjs/client": "^4.5.15",
     "@feathersjs/socketio-client": "^4.5.15",
+    "@fontsource/roboto": "^4.5.7",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.8.5",
     "@testing-library/jest-dom": "^5.16.4",
