@@ -9,14 +9,13 @@ import InputBase from '@mui/material/InputBase';
 import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
-import { useAuth } from './Authentication/useAuth';
 import logo from './assets/images/aircare-logo.png';
+import { useRecoilValue } from 'recoil';
+import { userAtom } from './atoms/user';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -63,7 +62,7 @@ export function PrimaryAppBar() {
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
 
-  const {authState} = useAuth()
+  const user = useRecoilValue(userAtom);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -163,7 +162,7 @@ export function PrimaryAppBar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton
+          {/*<IconButton
             size="large"
             edge="start"
             color="inherit"
@@ -173,7 +172,7 @@ export function PrimaryAppBar() {
             <MenuIcon />
           </IconButton>
           
-          {/*<Typography
+          <Typography
             variant="h6"
             noWrap
             component="div"
@@ -182,9 +181,17 @@ export function PrimaryAppBar() {
             AirCare
           </Typography>*/}
           <img src={logo} alt="AirCare Logo" style={{maxHeight: '50px'}}/>
+          {user && <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ display: { xs: 'none', sm: 'block' } }}
+          >
+            {user.firstName} {user.lastName}
+          </Typography>}
           <Box sx={{ flexGrow: 1 }} />
           
-          {authState.authenticated && <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+          {user && <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton size="large" aria-label="show 4 new mails" color="inherit">
               <Badge badgeContent={4} color="error">
                 <MailIcon />
