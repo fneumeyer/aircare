@@ -1,7 +1,7 @@
 import React, {  } from 'react';
 import './App.css';
 import CssBaseline from '@mui/material/CssBaseline';
-import { BottomNavigation, BottomNavigationAction, Box, Container, Grid, ThemeProvider } from '@mui/material';
+import { BottomNavigation, BottomNavigationAction, Box, Container, Grid, Paper, ThemeProvider } from '@mui/material';
 import { BrowserRouter } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 import { Routing } from './Routing';
@@ -36,17 +36,19 @@ function App() {
               </Container>
             </Grid>
             <Grid item xs="auto">
-              <BottomNavigation
-                showLabels
-                value={value}
-                onChange={(event, newValue) => {
-                  setValue(newValue);
-                }}
-              >
-                <BottomNavigationAction label="Home" icon={<HomeIcon />} />
-                <BottomNavigationAction label="Search" icon={<SearchIcon />} />
-                <BottomNavigationAction label="Notifications" icon={<NotificationsIcon />} />
-              </BottomNavigation>
+            <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
+                <BottomNavigation
+                  showLabels
+                  value={value}
+                  onChange={(event, newValue) => {
+                    setValue(newValue);
+                  }}
+                >
+                  <BottomNavigationAction label="Home" icon={<HomeIcon />} />
+                  <BottomNavigationAction label="Search" icon={<SearchIcon />} />
+                  <BottomNavigationAction label="Notifications" icon={<NotificationsIcon />} />
+                </BottomNavigation>
+              </Paper>
             </Grid>
           </Grid>
         </Box>

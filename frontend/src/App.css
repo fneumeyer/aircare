@@ -62,11 +62,45 @@ body{
   font-size: 40px;
 }
 #question-unit-text {
-  padding-left: 10px;
+  padding-left: 20px;
   font-size: 40px;
 }
 #submit-answer-button {
   font-size: 30px;
   margin: 20px;
+  margin-top: 5%;
+  padding: 20px;
+  justify-content: center;
   background-color: orange;
+}
+#question-next-button {
+  font-size: 30px;
+  margin: 20px;
+  margin-top: 5%;
+  padding: 20px;
+  justify-content: center;
+  background-color: orange;
+}
+.question-header-container {
+  margin-top: 20px;
+}
+.question-input-container {
+  margin-top: 50px;
+  text-align: center;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.question-checkbox-container {
+  display: flex;
+  flex-direction: column;
+  /*align-items: center;*/
+  padding-left: 20px;
+  margin-top: 50px;
+  text-align: center;
+}
+.question-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
 }
