@@ -104,3 +104,9 @@ body{
   justify-content: center;
   align-items: flex-end;
 }
+.chk-correct {
+  color: green;
+}
+.chk-incorrect {
+  color: red;
+}

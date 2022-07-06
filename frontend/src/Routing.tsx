@@ -40,7 +40,7 @@ export function Routing(){
         element={<SubtaskOverview />}>
       </Route>
       <Route
-        path="/task/:id/question/:questionId"
+        path="/task/:id/question/:stepId"
         element={<Question />} >
       </Route>
     </Routes>
