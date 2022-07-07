@@ -20,7 +20,6 @@ export function StepOverview(props: Props){
     );
 
     return (
-        /*<ThemeProvider  theme={theme} children={*/
         <div className="root-container">
             <h1>Mastercard #3: Fix Gearing Cover</h1>
             <h2>Page 3, Step 1: Install Engine Bottom Cover</h2>
@@ -43,9 +42,10 @@ export function StepOverview(props: Props){
             </TabPanel>
 
         </div>
-        /*}/>*/
     );
 
+    //sx={{backgroundColor: "green", "&:hover": {"backgroundColor": "green"}}}
+    // sx={{"padding": "15px", fontSize:"1.5rem", margin: "10px",}}
     function renderOverviewTabPanel() {
         return (
             <div>
@@ -53,8 +53,8 @@ export function StepOverview(props: Props){
                 <h4>TODO: Question Button</h4>
                 <h4>TODO: Next step button</h4>
                 <div className="button-bottom-container">
-                <Button color="actionbutton" variant="large" onClick={openQuestions} >VIEW QUESTIONS</Button>
-                <Button color="actionbutton" disabled={false}  variant="large" onClick={onFinishStepClick}>FINISH STEP</Button>
+                <Button color="actionbutton"  variant="contained" onClick={openQuestions} >VIEW QUESTIONS</Button>
+                <Button color="actionbutton" disabled={false}  variant="contained" onClick={onFinishStepClick}>FINISH STEP</Button>
                 </div>
             </div>
         );

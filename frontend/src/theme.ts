@@ -20,16 +20,19 @@ declare module '@mui/material/styles' {
 declare module '@mui/material/styles/createPalette' {
   interface Palette {
     actionbutton: Palette['primary'];
+    actionbutton2: Palette['primary'];
   }
 
   interface PaletteOptions {
     actionbutton?: PaletteOptions['primary'];
+    actionbutton2?: PaletteOptions['primary'];
   }
 }
 
 declare module '@mui/material/Button' {
   interface ButtonPropsColorOverrides {
     actionbutton: true;
+    actionbutton2: true;
   }
   interface ButtonPropsVariantOverrides {
     large: true;
@@ -43,9 +46,28 @@ export const theme = createTheme({
       main: "#ffa600",
       contrastText: '#fff',
     },
+    actionbutton2: {
+      main: "green",
+      contrastText: '#fff',
+    },
   },
   components: {
     MuiButton: {
+      styleOverrides: {
+        root: ({ ownerState, theme }) => {
+          if (ownerState.color !== undefined) {
+            if (ownerState.color.startsWith("actionbutton")) {
+              return {
+                padding: "15px",
+                fontSize: "1.5rem",
+                margin: "10px",
+              };
+            }
+          } 
+          return {}; // don't apply custom styling
+          
+        }
+      },
       variants: [
         {
           props: { variant: 'large', },
@@ -53,14 +75,10 @@ export const theme = createTheme({
             margin: "10px",
             fontSize: "1.5rem",
             padding: "15px",
-            /*color: defaultTheme.palette.primary.contrastText,
-            backgroundColor: defaultTheme.palette.primary.main,*/
             backgroundColor: "#ffa500",
             color: "#fff",
             boxShadow: shadows[4],
             '&:hover': {
-              /*color: "inherit",//defaultTheme.palette.primary.contrastText,
-              backgroundColor: defaultTheme.palette.primary.main,*/
               backgroundColor: "#ffa500",
               color: "#fff",
               boxShadow: shadows[6],
