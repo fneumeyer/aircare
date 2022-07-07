@@ -6,6 +6,7 @@ import { EngineList } from "./Engines/EngineList"
 import {SubtaskOverview} from "./Dashboard/SubtaskOverview"
 import {Question} from "./Questions/Question"
 import SignIn from "./SignIn"
+import { StepOverview } from "./Dashboard/StepOverview"
 
 export function Routing(){
 
@@ -40,7 +41,11 @@ export function Routing(){
         element={<SubtaskOverview />}>
       </Route>
       <Route
-        path="/task/:id/question/:stepId"
+        path="/task/:id/step/:stepId"
+        element={<StepOverview />}>
+      </Route>
+      <Route
+        path="/task/:id/step/:stepId/question"
         element={<Question />} >
       </Route>
     </Routes>

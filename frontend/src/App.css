@@ -99,7 +99,7 @@ body{
   margin-top: 50px;
   text-align: center;
 }
-.question-button-container {
+.button-bottom-container {
   display: flex;
   justify-content: center;
   align-items: flex-end;
@@ -109,4 +109,23 @@ body{
 }
 .chk-incorrect {
   color: red;
+}
+
+/* Subtask Overview */
+.assigned-workers-container-inner {
+  display: inline-block;
+  overflow: hidden;
+  margin-right: 20px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+.assigned-workers-container-outer {
+  align-items: center;
+  display: flex;
+  justify-content: left;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.label-warning {
+  color: orange;
 }

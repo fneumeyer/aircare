@@ -45,7 +45,7 @@ export function Question (prop: Props) {
                 {renderQuestionTextfield()}
                 {renderQuestionCheckbox()}
                 {(questionState === "answer-mode") ? <h2> {solutionText}</h2> : null}
-                <div className="question-button-container">
+                <div className="button-bottom-container">
                     {renderButtons()}
                 </div>
             <h3>Related Ressource: </h3>
