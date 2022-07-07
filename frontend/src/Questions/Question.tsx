@@ -1,6 +1,6 @@
 import { Button, Checkbox, FilledInput, FormControl, FormControlLabel, InputAdornment, TextField } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import "./../App.css"
 
 type Props = {
@@ -17,7 +17,7 @@ type AnswerOption = {text: string, isCorrect: boolean, userValue: boolean}; // f
 type QuestionState = "answer-mode" | "question-mode";
 
 export function Question (prop: Props) {
-    // let { id, stepId } = useParams();
+    let { id, stepId } = useParams();
     let [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
 
 
@@ -32,6 +32,14 @@ export function Question (prop: Props) {
     let [textInput, setTextInput] = useState<string>("");
     let [solutionText, setSolutionText] = useState<string>("");
 
+
+    const navigate = useNavigate()
+    const openStepOverview = useCallback(
+        () => {
+        navigate(`/task/${id}/step/${stepId}`)
+        },
+        [navigate]
+    );
 
     return (
         // TODO: Replace placeholder data
@@ -50,7 +58,6 @@ export function Question (prop: Props) {
                     {renderButtons()}
                     </div>
                 </div>
-            <h3>Related Ressource: </h3>
         </div>
     );
 
@@ -97,7 +104,7 @@ export function Question (prop: Props) {
         }else {
             // no question is available anymore
             // switch to task screen
-            
+            openStepOverview();
         }
     }
 
@@ -107,9 +114,9 @@ export function Question (prop: Props) {
 
     function renderButtons() {
         if(questionState === "question-mode") {
-            return <Button id="submit-answer-button" variant="large" onClick={onSubmitClick}>Submit answer</Button>
+            return <Button id="submit-answer-button" color="actionbutton" variant="contained" onClick={onSubmitClick}>Submit answer</Button>
         }else{
-            return <Button id="question-next-button" variant="large" onClick={onNextClick}>{currentQuestionIndex + 1 < questionData.length ? "Next Question" : "Continue"}</Button>
+            return <Button id="question-next-button" color="actionbutton" variant="contained" onClick={onNextClick}>{currentQuestionIndex + 1 < questionData.length ? "Next Question" : "Continue"}</Button>
         }
     }
 

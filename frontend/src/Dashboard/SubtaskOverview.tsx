@@ -135,7 +135,7 @@ export function SubtaskOverview(props: Props){
 
             <h4> TODO Add Comment button</h4>
             <div className="button-bottom-container">
-                <Button id="submit-answer-button" variant="large" onClick={openStepDetails}>START TASK</Button>
+                <Button id="submit-answer-button" color="actionbutton" variant="contained" onClick={openStepDetails}>START TASK</Button>
             </div>
         </div>
         );

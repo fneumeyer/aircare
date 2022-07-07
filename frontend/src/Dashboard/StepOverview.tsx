@@ -44,8 +44,6 @@ export function StepOverview(props: Props){
         </div>
     );
 
-    //sx={{backgroundColor: "green", "&:hover": {"backgroundColor": "green"}}}
-    // sx={{"padding": "15px", fontSize:"1.5rem", margin: "10px",}}
     function renderOverviewTabPanel() {
         return (
             <div>
@@ -53,11 +51,16 @@ export function StepOverview(props: Props){
                 <h4>TODO: Question Button</h4>
                 <h4>TODO: Next step button</h4>
                 <div className="button-bottom-container">
+                <Button color="actionbutton2" variant="contained" onClick={openPrevious}>PREVIOUS STEP</Button>
                 <Button color="actionbutton"  variant="contained" onClick={openQuestions} >VIEW QUESTIONS</Button>
                 <Button color="actionbutton" disabled={false}  variant="contained" onClick={onFinishStepClick}>FINISH STEP</Button>
                 </div>
             </div>
         );
+    }
+
+    function openPrevious() {
+        
     }
 
     function onQuestionClick() {
