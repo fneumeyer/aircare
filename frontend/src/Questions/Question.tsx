@@ -46,7 +46,9 @@ export function Question (prop: Props) {
                 {renderQuestionCheckbox()}
                 {(questionState === "answer-mode") ? <h2> {solutionText}</h2> : null}
                 <div className="button-bottom-container">
+                    <div className="button-bottom-container-inner">
                     {renderButtons()}
+                    </div>
                 </div>
             <h3>Related Ressource: </h3>
         </div>
@@ -105,9 +107,9 @@ export function Question (prop: Props) {
 
     function renderButtons() {
         if(questionState === "question-mode") {
-            return <Button className="question-button" id="submit-answer-button" variant="contained" onClick={onSubmitClick}>Submit answer</Button>
+            return <Button id="submit-answer-button" variant="large" onClick={onSubmitClick}>Submit answer</Button>
         }else{
-            return <Button className="question-button" id="question-next-button" variant="contained" onClick={onNextClick}>{currentQuestionIndex + 1 < questionData.length ? "Next Question" : "Continue"}</Button>
+            return <Button id="question-next-button" variant="large" onClick={onNextClick}>{currentQuestionIndex + 1 < questionData.length ? "Next Question" : "Continue"}</Button>
         }
     }
 

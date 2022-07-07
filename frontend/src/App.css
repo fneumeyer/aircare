@@ -65,13 +65,14 @@ body{
   padding-left: 20px;
   font-size: 40px;
 }
+/*
 #submit-answer-button {
   font-size: 30px;
   margin: 20px;
   margin-top: 5%;
   padding: 20px;
   justify-content: center;
-  background-color: orange;
+  background-color: #ffa500;
 }
 #question-next-button {
   font-size: 30px;
@@ -79,8 +80,9 @@ body{
   margin-top: 5%;
   padding: 20px;
   justify-content: center;
-  background-color: orange;
-}
+  background-color: #ffa600;
+}*/
+
 .question-header-container {
   margin-top: 20px;
 }
@@ -100,9 +102,14 @@ body{
   text-align: center;
 }
 .button-bottom-container {
+  margin: 10px;
   display: flex;
   justify-content: center;
   align-items: flex-end;
+}
+.button-bottom-container-inner{
+  margin: 20px;
+  margin-top: 30px;
 }
 .chk-correct {
   color: green;

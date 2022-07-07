@@ -49,7 +49,7 @@ export function SubtaskOverview(props: Props){
     const [open, setOpen] = React.useState(false);
     const  [textWorkerInput, setTextWorkerInput] = React.useState("");
     const [workers, setWorkers] = React.useState<Worker[]>([{id: "abc", name: "Lutian"}]);
-    const [valueTab, setValueTab] = React.useState<number>(0);
+    const [tabIndex, setTabIndex] = React.useState<number>(0);
 
     const navigate = useNavigate()
     const openStepDetails = useCallback(
@@ -63,16 +63,16 @@ export function SubtaskOverview(props: Props){
         <div>
         <h1> Fix Gearing Cover - #{id}</h1>
         <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
-            <Tabs value={valueTab} onChange={handleTabChange} centered>
+            <Tabs value={tabIndex} onChange={handleTabChange} centered>
                 <Tab label="Overview" />
                 <Tab label="Mastercard"/>
             </Tabs>
         </Box>
-        <TabPanel value={valueTab} index={0}>
+        <TabPanel value={tabIndex} index={0}>
             {renderFirstTabPanel()}
            
         </TabPanel>
-        <TabPanel value={valueTab} index={1}>
+        <TabPanel value={tabIndex} index={1}>
            {renderSecondTabPanel()}
         </TabPanel>
         </div>
@@ -135,11 +135,12 @@ export function SubtaskOverview(props: Props){
 
             <h4> TODO Add Comment button</h4>
             <div className="button-bottom-container">
-            <Button className="question-button" id="submit-answer-button" variant="contained" onClick={openStepDetails}>START TASK</Button>
+                <Button id="submit-answer-button" variant="large" onClick={openStepDetails}>START TASK</Button>
             </div>
         </div>
         );
     }
+    // TODO Dialog: Search for real users
 
 
     function renderTable() {
@@ -191,7 +192,7 @@ export function SubtaskOverview(props: Props){
 
 
     function handleTabChange(event: React.SyntheticEvent, newValue: number) {
-        setValueTab(newValue);
+        setTabIndex(newValue);
     }
 
     function onAddWorkerClick() {
@@ -203,7 +204,6 @@ export function SubtaskOverview(props: Props){
     }
 
     function handleClose(event: string) {
-        
         if(event === "add" && textWorkerInput !== "") {
             let list = workers.concat([{id: textWorkerInput, name: textWorkerInput}]);
             setWorkers(list)
@@ -216,7 +216,7 @@ export function SubtaskOverview(props: Props){
     }
 
     function handleClick(worker: Worker, index: number) {
-
+        // TODO: Navigation to Profile page
     }
 
     function handleDelete(worker: Worker, index: number) {
