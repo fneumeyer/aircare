@@ -14,7 +14,7 @@ type QuestionData = {type: "textfield", stepLocation: string, title: string, cor
     
 
 type AnswerOption = {text: string, isCorrect: boolean, userValue: boolean}; // for checkbox state management
-type QuestionState = "answer-mode" | "question-mode";
+type QuestionState = "answer-mode" | "question-mode" | "result-mode";
 
 export function Question (prop: Props) {
     let { id, stepId } = useParams();

@@ -19,6 +19,13 @@ type Props = {
 
 }
 
+const colorsIcon = {
+    colorBackgroundHover: "#18dbb2",
+    colorBackground: "#38dbb2",
+    colorBorder: "#38dbb2",
+    colorIcon: "#fff",
+};
+
 const StyledLink = styled(Link)(({theme}) => ({
     textDecoration: 'none'
 }))
@@ -110,8 +117,8 @@ export function StepOverview(props: Props){
                 <CardHeader
                     titleTypographyProps={{fontSize: "24px", fontWeight: "bold"}}
                     avatar={
-                    <Avatar aria-label="recipe">
-                        <IconButton aria-label="tool">
+                    <Avatar sx={{ backgroundColor: colorsIcon.colorBackgroundHover,}} aria-label="recipe">
+                        <IconButton sx={{backgroundColor: colorsIcon.colorBackground, borderColor: colorsIcon.colorBorder,  color: colorsIcon.colorIcon, }} aria-label="tool">
                             <BuildIcon />
                         </IconButton>
                     </Avatar>
@@ -139,8 +146,8 @@ export function StepOverview(props: Props){
                 <CardHeader
                     titleTypographyProps={{fontSize: "24px", fontWeight: "bold"}}
                     avatar={
-                    <Avatar aria-label="parts">
-                        <IconButton aria-label="parts">
+                    <Avatar sx={{ backgroundColor: colorsIcon.colorBackgroundHover,}} aria-label="parts">
+                        <IconButton sx={{backgroundColor: colorsIcon.colorBackground, borderColor: colorsIcon.colorBorder,  color: colorsIcon.colorIcon, }} aria-label="parts">
                             <InventoryIcon />
                         </IconButton>
                     </Avatar>
@@ -177,8 +184,8 @@ export function StepOverview(props: Props){
                 <CardHeader
                     titleTypographyProps={{fontSize: "24px", fontWeight: "bold"}}
                     avatar={
-                    <Avatar aria-label="description">
-                        <IconButton aria-label="description">
+                    <Avatar sx={{ backgroundColor: colorsIcon.colorBackgroundHover,}} aria-label="description">
+                        <IconButton sx={{backgroundColor: colorsIcon.colorBackground, borderColor: colorsIcon.colorBorder,  color: colorsIcon.colorIcon, }} aria-label="description">
                             <DescriptionIcon />
                         </IconButton>
                     </Avatar>
