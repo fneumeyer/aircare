@@ -1,0 +1,31 @@
+import { Card, CardContent, CardHeader, IconButton, Tooltip,  } from "@mui/material";
+import { ColoredIcon } from "./ColoredIcon";
+import SettingsIcon from '@mui/icons-material/Settings';
+import DescriptionIcon from '@mui/icons-material/Description';
+
+export function DescriptionCard() {
+    return (
+        <Card style={{backgroundColor:"#2279ec5E", marginBottom: "10px", marginTop: "10px"}}>
+            <CardHeader
+                titleTypographyProps={{fontSize: "24px", fontWeight: "bold"}}
+                avatar={
+                    <ColoredIcon child={<DescriptionIcon/>} ariaLabel="description"></ColoredIcon>
+                }
+                action={
+                <Tooltip title="Edit">
+                    <IconButton aria-label="settings">
+                        <SettingsIcon />
+                    </IconButton>
+                </Tooltip>
+                }
+                title="Description"
+            />
+            <CardContent>
+                <ul>
+                    <li>Fix the Engine Cover Part 7 with a torque wrench (25 Nm).</li>
+                    <li>Then, continue with Engine Cover part 3.</li>
+                </ul>
+            </CardContent>
+        </Card>
+    );
+}

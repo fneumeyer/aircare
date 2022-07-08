@@ -1,30 +1,23 @@
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useCallback, useEffect, useRef } from "react";
-import { Avatar, Box, Breadcrumbs, Button, Card, CardContent, CardHeader, FormControl, Grid, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, styled, Tab, Tabs, ThemeProvider, Tooltip, Typography } from "@mui/material";
+import {Box, Breadcrumbs, Button, FormControl, Grid, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, styled, Tab, Tabs, Typography } from "@mui/material";
 import { TabPanel } from "./TabPanel";
-import BuildIcon from '@mui/icons-material/Build';
-import SettingsIcon from '@mui/icons-material/Settings';
-import DescriptionIcon from '@mui/icons-material/Description';
-import InventoryIcon from '@mui/icons-material/Inventory';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { Link } from "react-router-dom";
 import { Document, Page } from 'react-pdf/dist/esm/entry.webpack5';
 import { PDFDocumentProxy } from 'react-pdf/node_modules/pdfjs-dist';
 import sample from './../assets/regal.pdf';
+import { ToolsCard } from "./ToolsCard";
+import { PartsCard } from "./PartsCard";
+import { DescriptionCard } from "./DescriptionCard";
 
 
 type Props = {
 
 }
 
-const colorsIcon = {
-    colorBackgroundHover: "#18dbb2",
-    colorBackground: "#38dbb2",
-    colorBorder: "#38dbb2",
-    colorIcon: "#fff",
-};
+
 
 const StyledLink = styled(Link)(({theme}) => ({
     textDecoration: 'none'
@@ -73,20 +66,24 @@ export function StepOverview(props: Props){
                 <Paper>
                 <Tabs value={tabIndex} onChange={handleTabChange} centered>
                     <Tab label="Overview" />
+                    <Tab label="Questions"/>
                     <Tab label="Mastercard"/>
                     <Tab label="WIKI" />
                 </Tabs>
                 </Paper>
-                {(tabIndex === 1) ?<PdfMenuBar></PdfMenuBar> : null}
+                {(tabIndex === 2) ?<PdfMenuBar></PdfMenuBar> : null}
             </Grid>
             <Grid item xs sx={{overflow: 'auto'}}>
                 <TabPanel value={tabIndex} index={0}>
                     {renderOverviewTabPanel()}
                 </TabPanel>
                 <TabPanel value={tabIndex} index={1}>
-                    {<SecondTabPanel />}
+                    {renderQuestionTabPanel()}
                 </TabPanel>
                 <TabPanel value={tabIndex} index={2}>
+                    {<MastercardTabPanel />}
+                </TabPanel>
+                <TabPanel value={tabIndex} index={3}>
                     {renderWikiTabPanel()}
                 </TabPanel>
             </Grid>
@@ -97,9 +94,9 @@ export function StepOverview(props: Props){
     function renderOverviewTabPanel() {
         return (
             <div>
-                {renderToolsCard()}
-                {renderPartsCard()}
-                {renderDescriptionCard()}
+                <ToolsCard/>
+                <PartsCard/>
+                <DescriptionCard/>
                 <div className="button-bottom-container">
                     <Button color="actionbutton2" variant="contained" onClick={openPrevious}>PREVIOUS STEP</Button>
                     <Button color="actionbuttonblue"  variant="contained" onClick={openQuestions} >VIEW QUESTIONS</Button>
@@ -109,103 +106,10 @@ export function StepOverview(props: Props){
         );
     }
 
-    function renderToolsCard() {
-        // #0354bf96
-        // 34, 121, 236, 0.37: #2279ec5E
-        return (
-            <Card style={{backgroundColor:"#2279ec5E", marginBottom: "10px", marginTop: "10px"}}>
-                <CardHeader
-                    titleTypographyProps={{fontSize: "24px", fontWeight: "bold"}}
-                    avatar={
-                    <Avatar sx={{ backgroundColor: colorsIcon.colorBackgroundHover,}} aria-label="recipe">
-                        <IconButton sx={{backgroundColor: colorsIcon.colorBackground, borderColor: colorsIcon.colorBorder,  color: colorsIcon.colorIcon, }} aria-label="tool">
-                            <BuildIcon />
-                        </IconButton>
-                    </Avatar>
-                    }
-                    action={
-                    <Tooltip title="Edit">
-                        <IconButton aria-label="settings">
-                            <SettingsIcon />
-                        </IconButton>
-                    </Tooltip>
-                    }
-                    title="Tools"
-                />
-                <CardContent>
-                    <ul>
-                        <li>Torque Wrench</li>
-                    </ul>
-                </CardContent>
-            </Card>
-        );
-    }
-    function renderPartsCard() {
-        return (
-            <Card style={{backgroundColor:"#2279ec5E", marginBottom: "10px", marginTop: "10px"}}>
-                <CardHeader
-                    titleTypographyProps={{fontSize: "24px", fontWeight: "bold"}}
-                    avatar={
-                    <Avatar sx={{ backgroundColor: colorsIcon.colorBackgroundHover,}} aria-label="parts">
-                        <IconButton sx={{backgroundColor: colorsIcon.colorBackground, borderColor: colorsIcon.colorBorder,  color: colorsIcon.colorIcon, }} aria-label="parts">
-                            <InventoryIcon />
-                        </IconButton>
-                    </Avatar>
-                    }
-                    action={
-                    <Tooltip title="Edit">
-                        <IconButton aria-label="settings">
-                            <SettingsIcon />
-                        </IconButton>
-                    </Tooltip>
-                    }
-                    title="Parts"
-                />
-                <CardContent>
-                    <ul>
-                        <li>
-                            <div className="parts-row-container">
-                                <span>Engine Cover Part 3</span>
-                                <Tooltip title="Similar to Engine Cover 4">
-                                    <WarningAmberIcon style={{marginLeft: "10px"}}/>
-                                </Tooltip>
-                            </div>
-                        </li>
-                        <li>Engine Cover Part 7</li>
-                    </ul>
-                </CardContent>
-            </Card>
-        );
-    }
 
-    function renderDescriptionCard() {
+    function renderQuestionTabPanel() {
         return (
-            <Card style={{backgroundColor:"#2279ec5E", marginBottom: "10px", marginTop: "10px"}}>
-                <CardHeader
-                    titleTypographyProps={{fontSize: "24px", fontWeight: "bold"}}
-                    avatar={
-                    <Avatar sx={{ backgroundColor: colorsIcon.colorBackgroundHover,}} aria-label="description">
-                        <IconButton sx={{backgroundColor: colorsIcon.colorBackground, borderColor: colorsIcon.colorBorder,  color: colorsIcon.colorIcon, }} aria-label="description">
-                            <DescriptionIcon />
-                        </IconButton>
-                    </Avatar>
-                    }
-                    action={
-                    <Tooltip title="Edit">
-                        <IconButton aria-label="settings">
-                            <SettingsIcon />
-                        </IconButton>
-                    </Tooltip>
-                    }
-                    title="Description"
-                />
-                <CardContent>
-                    <ul>
-                        <li>Fix the Engine Cover Part 7 with a torque wrench (25 Nm).</li>
-                        <li>Then, continue with Engine Cover part 3.</li>
-                    </ul>
-                </CardContent>
-            </Card>
+            <h4>TODO Question and Answer Tab</h4>
         );
     }
 
@@ -225,7 +129,7 @@ export function StepOverview(props: Props){
         console.log("Hello")
     }
 
-    function SecondTabPanel({
+    function MastercardTabPanel({
         scrollToPage
     }: {
         scrollToPage?: number

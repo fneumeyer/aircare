@@ -1,5 +1,5 @@
 
-import { Box, Breadcrumbs, Button, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, Grid, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, styled, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, TextField, Typography, } from "@mui/material";
+import { Box, Breadcrumbs, Button, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, Grid, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, styled, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, TextField, Tooltip, Typography, } from "@mui/material";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { TabPanel } from "./TabPanel";
 import {
@@ -17,6 +17,8 @@ import client from "../feathers";
 //const urlPdf =  "https://www.ikea.com/de/de/assembly_instructions/enhet-unterschrank-fuer-ofen-mit-schubl-weiss__AA-2195104-5-2.pdf";
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import SettingsIcon from '@mui/icons-material/Settings';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 type Props = {
 
@@ -222,7 +224,20 @@ export function SubtaskOverview(props: Props){
                     <TableCell align="right">{rowData.questionResult}</TableCell>
                     <TableCell align="right">{rowData.status}</TableCell>
                     <TableCell align="right">{(rowData.duration > 0)?rowData.duration + " min" : "N/A"}</TableCell>
-                    <TableCell align="center" children={<Button>MANAGE</Button>}></TableCell>
+                    <TableCell align="center" children={
+                        <div>
+                            <Tooltip title="Configure">
+                                <IconButton>
+                                    <SettingsIcon/>
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title="View Subtask">
+                                <IconButton>
+                                    <VisibilityIcon/>
+                                </IconButton>
+                            </Tooltip>
+                        </div>
+                        }></TableCell>
                     </TableRow>
                 ))}
                 </TableBody>
