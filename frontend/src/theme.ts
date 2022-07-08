@@ -12,6 +12,7 @@ declare module '@mui/material/styles/createPalette' {
   interface PaletteOptions {
     actionbutton?: PaletteOptions['primary'];
     actionbutton2?: PaletteOptions['primary'];
+    actionbuttonblue?: PaletteOptions['primary'];
   }
 }
 
@@ -19,11 +20,13 @@ declare module '@mui/material/Button' {
   interface ButtonPropsColorOverrides {
     actionbutton: true;
     actionbutton2: true;
+    actionbuttonblue: true;
   }
   interface ButtonPropsVariantOverrides {
     large: true;
   }
 }
+const defTheme = createTheme();
 
 export const theme = createTheme({
   palette: {
@@ -34,6 +37,10 @@ export const theme = createTheme({
     },
     actionbutton2: {
       main: "#aaa",
+      contrastText: '#fff',
+    },
+    actionbuttonblue: {
+      main: defTheme.palette.primary.main,
       contrastText: '#fff',
     },
   },

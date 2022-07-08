@@ -84,10 +84,10 @@ export function SubtaskOverview(props: Props){
             <div>
                 <h2>Assigned Workers</h2>
             <div className="assigned-workers-container-outer">
-            
                 {workers.length > 0? workers.map(function (worker: Worker, index: number) {
-                    return <div className="assigned-workers-container-inner">
+                    return <div className="assigned-workers-container-inner" key={"div-" + worker.name}>
                         <Chip
+                            key={"chip-" + worker.name}
                             label={worker.name}
                             onClick={() => handleClick(worker, index)}
                             onDelete={() => handleDelete(worker, index)}

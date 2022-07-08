@@ -116,7 +116,7 @@ export function Question (prop: Props) {
         if(questionState === "question-mode") {
             return <Button id="submit-answer-button" color="actionbutton" variant="contained" onClick={onSubmitClick}>Submit answer</Button>
         }else{
-            return <Button id="question-next-button" color="actionbutton" variant="contained" onClick={onNextClick}>{currentQuestionIndex + 1 < questionData.length ? "Next Question" : "Continue"}</Button>
+            return <Button id="question-next-button" color="actionbuttonblue" variant="contained" onClick={onNextClick}>{currentQuestionIndex + 1 < questionData.length ? "Next Question" : "Continue"}</Button>
         }
     }
 

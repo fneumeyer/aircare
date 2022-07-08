@@ -65,24 +65,6 @@ body{
   padding-left: 20px;
   font-size: 40px;
 }
-/*
-#submit-answer-button {
-  font-size: 30px;
-  margin: 20px;
-  margin-top: 5%;
-  padding: 20px;
-  justify-content: center;
-  background-color: #ffa500;
-}
-#question-next-button {
-  font-size: 30px;
-  margin: 20px;
-  margin-top: 5%;
-  padding: 20px;
-  justify-content: center;
-  background-color: #ffa600;
-}*/
-
 .question-header-container {
   margin-top: 20px;
 }
@@ -104,8 +86,7 @@ body{
 .button-bottom-container {
   margin: 10px;
   display: flex;
-  justify-content: center;
-  align-items: flex-end;
+  justify-content: space-around;
 }
 .button-bottom-container-inner{
   margin: 20px;
@@ -135,4 +116,11 @@ body{
 }
 .label-warning {
   color: orange;
+}
+/* StepOverview*/
+.parts-row-container {
+  align-items: center;
+  display: flex;
+  justify-content: left;
+  flex-direction: row;
 }
