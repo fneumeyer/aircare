@@ -28,29 +28,27 @@ function App() {
             <Grid item xs="auto">
               <PrimaryAppBar />
             </Grid>
-            <Grid item xs>
+            <Grid item xs sx={{overflow: 'hidden'}}>
               <Container sx={{height: '100%'}}>
                 <BrowserRouter>
                   <Routing />
                 </BrowserRouter>
               </Container>
             </Grid>
-            <Grid item xs="auto">
-            <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
-                <BottomNavigation
-                  showLabels
-                  value={value}
-                  onChange={(event, newValue) => {
-                    setValue(newValue);
-                  }}
-                >
-                  <BottomNavigationAction label="Home" icon={<HomeIcon />} />
-                  <BottomNavigationAction label="Search" icon={<SearchIcon />} />
-                  <BottomNavigationAction label="Notifications" icon={<NotificationsIcon />} />
-                </BottomNavigation>
-              </Paper>
-            </Grid>
           </Grid>
+          <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
+              <BottomNavigation
+                showLabels
+                value={value}
+                onChange={(event, newValue) => {
+                  setValue(newValue);
+                }}
+              >
+                <BottomNavigationAction label="Home" icon={<HomeIcon />} />
+                <BottomNavigationAction label="Search" icon={<SearchIcon />} />
+                <BottomNavigationAction label="Notifications" icon={<NotificationsIcon />} />
+              </BottomNavigation>
+            </Paper>
         </Box>
       </ThemeProvider>
     </RecoilRoot>

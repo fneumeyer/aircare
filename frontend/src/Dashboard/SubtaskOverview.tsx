@@ -1,6 +1,6 @@
 
-import { Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Paper, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, TextField, } from "@mui/material";
-import React, { useCallback } from "react";
+import { Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, TextField, } from "@mui/material";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { TabPanel } from "./TabPanel";
 import {
     useNavigate,
@@ -8,9 +8,11 @@ import {
   } from "react-router-dom";
 
 import { Document, Page } from 'react-pdf/dist/esm/entry.webpack5';
-
+import { PDFDocumentProxy } from 'react-pdf/node_modules/pdfjs-dist';
 // Related stackoverflow post: https://stackoverflow.com/questions/63569578/typescript-type-declarations-for-pdf-file
 import sample from './../assets/regal.pdf';
+import { IUser } from "backend/src/models/users.model";
+import client from "../feathers";
 //const urlPdf =  "https://www.ikea.com/de/de/assembly_instructions/enhet-unterschrank-fuer-ofen-mit-schubl-weiss__AA-2195104-5-2.pdf";
 
 type Props = {
@@ -47,14 +49,31 @@ type Worker = {
     name: string,
 }
 
-
-
 export function SubtaskOverview(props: Props){
     let { id } = useParams();
     const [open, setOpen] = React.useState(false);
     const  [textWorkerInput, setTextWorkerInput] = React.useState("");
     const [workers, setWorkers] = React.useState<Worker[]>([{id: "abc", name: "Lutian"}]);
     const [tabIndex, setTabIndex] = React.useState<number>(0);
+    const [scale, setScale] = React.useState<number>(1.0);
+    /*const [users, setUsers] = useState<IUser[]>([]);
+    
+    useEffect(() => {
+        client.service('users').find({
+            query: {
+                $limit: 100
+            }
+        }).then(users => {
+            setUsers(users)
+        })
+    }, [])
+    
+    const filteredWorkers = useMemo<IUser[]>(() => {
+        return users.filter(worker => {
+            const match = `${worker.firstName} ${worker.lastName}`.match(`${textWorkerInput}`);
+            return match !== null;
+        })
+    }, [textWorkerInput, workers])*/
 
     const [numPages, setNumPages] = React.useState<number>(0);
   const [pageNumber, setPageNumber] = React.useState(1);
@@ -67,27 +86,30 @@ export function SubtaskOverview(props: Props){
         [navigate]
     );
 
-    return (
-        <div>
-        <h1> Fix Gearing Cover - #{id}</h1>
-        <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
-            <Tabs value={tabIndex} onChange={handleTabChange} centered>
-                <Tab label="Overview" />
-                <Tab label="Mastercard"/>
-            </Tabs>
-        </Box>
-        <TabPanel value={tabIndex} index={0}>
-            {renderFirstTabPanel()}
-           
-        </TabPanel>
-        <TabPanel value={tabIndex} index={1}>
-           {renderSecondTabPanel()}
-        </TabPanel>
-        </div>
+    return <>
         
-    );
+        <Grid container sx={{height: '100%'}} spacing={2} direction="column">
+            <Grid item xs="auto">
+                <h1> Fix Gearing Cover - #{id}</h1>
+                <Paper>
+                    <Tabs value={tabIndex} onChange={handleTabChange} centered>
+                        <Tab label="Overview" />
+                        <Tab label="Mastercard"/>
+                    </Tabs>    
+                </Paper>
+            </Grid>
+            <Grid item xs sx={{overflow: 'auto'}}>
+                <TabPanel value={tabIndex} index={0}>
+                    {<FirstTabPanel />}
+                </TabPanel>
+                <TabPanel value={tabIndex} index={1} >
+                    {<SecondTabPanel scrollToPage={pageNumber} />}
+                </TabPanel>
+            </Grid>
+        </Grid>
+    </>;
 
-    function renderFirstTabPanel() {
+    function FirstTabPanel() {
         return (
             <div>
                 <h2>Assigned Workers</h2>
@@ -188,36 +210,88 @@ export function SubtaskOverview(props: Props){
         );
     }
 
-    function renderSecondTabPanel() {
+    
+    function SecondTabPanel({
+        scrollToPage
+    }: {
+        scrollToPage?: number
+    }) {
+        const [renderCounter, setRenderCounter] = useState(0) // Just here to force a rerender
+
+        const pageRef = useRef<HTMLElement>(null)
+
+        const onDocumentLoadSuccess = (pdf: PDFDocumentProxy) => {
+            setNumPages(pdf.numPages);
+        }
+        
+        useEffect(() => {
+            console.log(pageRef.current)
+            console.log(renderCounter)
+            if(pageRef.current !== null && renderCounter >= 0 && (scrollToPage ?? 0) > 0){
+                pageRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                console.log("Scroll?!")
+            }
+        }, [renderCounter, scrollToPage])
+        
         // TODO: Mastercard rendering
         return (
-            <div>
+            <Box>
+                <PdfMenuBar></PdfMenuBar>
                 <Document
                     file={sample}
                     onLoadSuccess={onDocumentLoadSuccess}
-                    
                     >
                     {Array.from(
                         new Array(numPages),
                         (el, index) => (
-                        <Page
-                            renderTextLayer={false}
-                            key={`page_${index + 1}`}
-                            pageNumber={index + 1}
-                        />
+                        <Box ref={index === scrollToPage ? pageRef : undefined}>
+                            <Page
+                                onRenderSuccess={index === scrollToPage ? () => setRenderCounter(renderCounter+1) : undefined}
+                                renderTextLayer={false}
+                                key={`page_${index + 1}`}
+                                pageNumber={index + 1}
+                            />
+                        </Box>
                         ),
                     )}
-                    </Document>
-            </div>
+                </Document>
+            </Box>
         );
     }
 
-    function onDocumentLoadSuccess() {
-        setNumPages(12);
-        console.log("num pages");
+    function PdfMenuBar() {
+        return (
+            <Box sx={{ flexGrow: 1 }}>
+                <Grid container direction="row" justifyContent="center" alignItems="center" spacing={3}>
+                    <Grid container justifyContent="center" item xs>
+                        <Button>Hello</Button>
+                    </Grid>
+                    <Grid container justifyContent="center" item xs>
+                        <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                            <InputLabel id="demo-select-small">Scale</InputLabel>
+                            <Select
+                                labelId="subtask-overview-scale-select"
+                                id="subtask-overview-scale-select"
+                                value={scale}
+                                label="Scale"
+                            >
+                                <MenuItem value="">
+                                <em>100%</em>
+                                </MenuItem>
+                                <MenuItem value={0.5}>50%</MenuItem>
+                                <MenuItem value={1}>100%</MenuItem>
+                                <MenuItem value={1.5}>150%</MenuItem>
+                                <MenuItem value={2.0}>200%</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid container justifyContent="center" item xs>
+                        <Button>Bonjour</Button>
+                    </Grid>
+                </Grid>
+          </Box>
+        );
     }
-   
-
 
     function handleTabChange(event: React.SyntheticEvent, newValue: number) {
         setTabIndex(newValue);

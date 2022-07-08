@@ -1,16 +1,22 @@
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useCallback } from "react";
-import { Avatar, Box, Button, Card, CardContent, CardHeader, IconButton, Tab, Tabs, ThemeProvider, Tooltip } from "@mui/material";
+import { Avatar, Box, Breadcrumbs, Button, Card, CardContent, CardHeader, IconButton, styled, Tab, Tabs, ThemeProvider, Tooltip, Typography } from "@mui/material";
 import { TabPanel } from "./TabPanel";
 import BuildIcon from '@mui/icons-material/Build';
 import SettingsIcon from '@mui/icons-material/Settings';
 import DescriptionIcon from '@mui/icons-material/Description';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import { Link } from "react-router-dom";
+
 
 type Props = {
 
 }
+
+const StyledLink = styled(Link)(({theme}) => ({
+    textDecoration: 'none'
+}))
 
 export function StepOverview(props: Props){
     let { id, stepId } = useParams();
@@ -20,11 +26,23 @@ export function StepOverview(props: Props){
         () => {
         navigate(`/task/${id}/step/${stepId}/question`)
         },
-        [navigate]
+        [id, navigate, stepId]
     );
 
     return (
         <div className="root-container">
+            <Breadcrumbs aria-label="breadcrumb">
+                <StyledLink color="inherit" to="/">
+                    Home
+                </StyledLink>
+                <StyledLink
+                    color="inherit"
+                    to={`/task/${id}`}
+                >
+                Task
+                </StyledLink>
+                <Typography color="text.primary">Subtask</Typography>
+            </Breadcrumbs>
             <h1>Mastercard #3: Fix Gearing Cover</h1>
             <h2>Page 3, Step 1: Install Engine Bottom Cover</h2>
             <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
@@ -36,10 +54,9 @@ export function StepOverview(props: Props){
             </Box>
             <TabPanel value={tabIndex} index={0}>
                 {renderOverviewTabPanel()}
-            
             </TabPanel>
             <TabPanel value={tabIndex} index={1}>
-            {renderSecondTabPanel()}
+                {<SecondTabPanel />}
             </TabPanel>
             <TabPanel value={tabIndex} index={2}>
                 {renderWikiTabPanel()}
@@ -180,7 +197,7 @@ export function StepOverview(props: Props){
         console.log("Hello")
     }
 
-    function renderSecondTabPanel() {
+    function SecondTabPanel() {
         return (
             <div>
                 <h4>TODO: Mastercard</h4>
