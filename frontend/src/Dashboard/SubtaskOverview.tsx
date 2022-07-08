@@ -1,8 +1,9 @@
 
-import { Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, TextField, } from "@mui/material";
+import { Box, Breadcrumbs, Button, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, Grid, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, styled, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, TextField, Typography, } from "@mui/material";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { TabPanel } from "./TabPanel";
 import {
+    Link,
     useNavigate,
     useParams
   } from "react-router-dom";
@@ -14,6 +15,8 @@ import sample from './../assets/regal.pdf';
 import { IUser } from "backend/src/models/users.model";
 import client from "../feathers";
 //const urlPdf =  "https://www.ikea.com/de/de/assembly_instructions/enhet-unterschrank-fuer-ofen-mit-schubl-weiss__AA-2195104-5-2.pdf";
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 
 type Props = {
 
@@ -49,13 +52,19 @@ type Worker = {
     name: string,
 }
 
+const StyledLink = styled(Link)(({theme}) => ({
+    textDecoration: 'none'
+}))
+
 export function SubtaskOverview(props: Props){
-    let { id } = useParams();
+    let { id, } = useParams();
     const [open, setOpen] = React.useState(false);
     const  [textWorkerInput, setTextWorkerInput] = React.useState("");
     const [workers, setWorkers] = React.useState<Worker[]>([{id: "abc", name: "Lutian"}]);
     const [tabIndex, setTabIndex] = React.useState<number>(0);
-    const [scale, setScale] = React.useState<number>(1.0);
+    const [scaleIndex, setScaleIndex] = React.useState<number>(4);
+    const scalesValues : number[] = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
+    const scaleTexts = ["50%", "75%",  "100%", "125%", "150%", "200%"];
     /*const [users, setUsers] = useState<IUser[]>([]);
     
     useEffect(() => {
@@ -76,7 +85,7 @@ export function SubtaskOverview(props: Props){
     }, [textWorkerInput, workers])*/
 
     const [numPages, setNumPages] = React.useState<number>(0);
-  const [pageNumber, setPageNumber] = React.useState(1);
+    const [pageNumber, setPageNumber] = React.useState(0); // start at 0
 
     const navigate = useNavigate()
     const openStepDetails = useCallback(
@@ -87,17 +96,28 @@ export function SubtaskOverview(props: Props){
     );
 
     return <>
-        
         <Grid container sx={{height: '100%'}} spacing={2} direction="column">
+            <Grid item xs="auto"> 
+                <div style={{marginTop: "5px"}}>
+                    <Breadcrumbs aria-label="breadcrumb">
+                        <StyledLink color="inherit" to="/">
+                            Home
+                        </StyledLink>
+                        <Typography color="text.primary">Task</Typography>
+                    </Breadcrumbs>
+                </div>
+            </Grid>
             <Grid item xs="auto">
                 <h1> Fix Gearing Cover - #{id}</h1>
                 <Paper>
                     <Tabs value={tabIndex} onChange={handleTabChange} centered>
                         <Tab label="Overview" />
                         <Tab label="Mastercard"/>
-                    </Tabs>    
+                    </Tabs>
                 </Paper>
+                {(tabIndex === 1) ?<PdfMenuBar></PdfMenuBar> : null}
             </Grid>
+            
             <Grid item xs sx={{overflow: 'auto'}}>
                 <TabPanel value={tabIndex} index={0}>
                     {<FirstTabPanel />}
@@ -107,6 +127,29 @@ export function SubtaskOverview(props: Props){
                 </TabPanel>
             </Grid>
         </Grid>
+        <Dialog open={open} onClose={() => handleClose('cancel')}>
+                <DialogTitle>Add Worker</DialogTitle>
+                <DialogContent>
+                <DialogContentText>
+                    Please enter the name of the worker:
+                </DialogContentText>
+                <TextField
+                    value={textWorkerInput}
+                    onChange={handleTextChange}
+                    autoFocus
+                    margin="dense"
+                    id="name"
+                    label="Full name"
+                    type="name"
+                    fullWidth
+                    variant="standard"
+                />
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={() =>handleClose('cancel')}>CANCEL</Button>
+                <Button onClick={() => handleClose('add')}>Add</Button>
+                </DialogActions>
+            </Dialog>
     </>;
 
     function FirstTabPanel() {
@@ -139,31 +182,8 @@ export function SubtaskOverview(props: Props){
             </div>
             <h2>Subtasks</h2>
             {renderTable()}
-            <Dialog open={open} onClose={() => handleClose('cancel')}>
-                <DialogTitle>Add Worker</DialogTitle>
-                <DialogContent>
-                <DialogContentText>
-                    Please enter the name of the worker:
-                </DialogContentText>
-                <TextField
-                    value={textWorkerInput}
-                    onChange={handleTextChange}
-                    autoFocus
-                    margin="dense"
-                    id="name"
-                    label="Full name"
-                    type="name"
-                    fullWidth
-                    variant="standard"
-                />
-                </DialogContent>
-                <DialogActions>
-                <Button onClick={() =>handleClose('cancel')}>CANCEL</Button>
-                <Button onClick={() => handleClose('add')}>Add</Button>
-                </DialogActions>
-            </Dialog>
+            
 
-            <h4> TODO Add Comment button</h4>
             <div className="button-bottom-container">
                 <Button id="submit-answer-button" color="actionbutton" variant="contained" onClick={openStepDetails}>START TASK</Button>
             </div>
@@ -233,10 +253,9 @@ export function SubtaskOverview(props: Props){
             }
         }, [renderCounter, scrollToPage])
         
-        // TODO: Mastercard rendering
+
         return (
-            <Box>
-                <PdfMenuBar></PdfMenuBar>
+            <Box display={"flex"} justifyContent={"center"}>
                 <Document
                     file={sample}
                     onLoadSuccess={onDocumentLoadSuccess}
@@ -246,6 +265,7 @@ export function SubtaskOverview(props: Props){
                         (el, index) => (
                         <Box ref={index === scrollToPage ? pageRef : undefined}>
                             <Page
+                                scale={scalesValues[scaleIndex]}
                                 onRenderSuccess={index === scrollToPage ? () => setRenderCounter(renderCounter+1) : undefined}
                                 renderTextLayer={false}
                                 key={`page_${index + 1}`}
@@ -264,33 +284,57 @@ export function SubtaskOverview(props: Props){
             <Box sx={{ flexGrow: 1 }}>
                 <Grid container direction="row" justifyContent="center" alignItems="center" spacing={3}>
                     <Grid container justifyContent="center" item xs>
-                        <Button>Hello</Button>
+                        
                     </Grid>
                     <Grid container justifyContent="center" item xs>
-                        <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-                            <InputLabel id="demo-select-small">Scale</InputLabel>
-                            <Select
-                                labelId="subtask-overview-scale-select"
-                                id="subtask-overview-scale-select"
-                                value={scale}
-                                label="Scale"
-                            >
-                                <MenuItem value="">
-                                <em>100%</em>
-                                </MenuItem>
-                                <MenuItem value={0.5}>50%</MenuItem>
-                                <MenuItem value={1}>100%</MenuItem>
-                                <MenuItem value={1.5}>150%</MenuItem>
-                                <MenuItem value={2.0}>200%</MenuItem>
-                            </Select>
-                        </FormControl>
+                        <IconButton onClick={onMinusClick}>
+                            <RemoveIcon></RemoveIcon>
+                        </IconButton>
+                        <Box sx={{ minWidth: 120 }}>
+                            <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                                <InputLabel id="demo-select-small">Scale</InputLabel>
+                                <Select
+                                    labelId="subtask-overview-scale-select"
+                                    id="subtask-overview-scale-select"
+                                    value={scaleIndex}
+                                    onChange={handleScaleSelectChange}
+                                    label="Scale"
+                                >
+                                    {scalesValues.map((value, index) => {
+                                        return (
+                                            <MenuItem value={index}>{scaleTexts[index]}</MenuItem>
+                                        );
+                                    })}
+                                
+                                </Select>
+                            </FormControl>
+                        </Box>
+                        <IconButton onClick={onPlusClick}>
+                            <AddIcon></AddIcon>
+                        </IconButton>
                     </Grid>
                     <Grid container justifyContent="center" item xs>
-                        <Button>Bonjour</Button>
+                        
                     </Grid>
                 </Grid>
           </Box>
         );
+    }
+
+    function onPlusClick() {
+        if(scaleIndex + 1 < scalesValues.length) {
+            setScaleIndex(scaleIndex + 1);
+        }
+    }
+
+    function onMinusClick() {
+        if(scaleIndex - 1 >= 0) {
+            setScaleIndex(scaleIndex - 1);
+        }
+    }
+
+    function handleScaleSelectChange(event: SelectChangeEvent<number>) {
+        setScaleIndex(Number(event.target.value));
     }
 
     function handleTabChange(event: React.SyntheticEvent, newValue: number) {

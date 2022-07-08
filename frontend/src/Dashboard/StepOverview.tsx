@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useCallback } from "react";
-import { Avatar, Box, Breadcrumbs, Button, Card, CardContent, CardHeader, IconButton, styled, Tab, Tabs, ThemeProvider, Tooltip, Typography } from "@mui/material";
+import { Avatar, Box, Breadcrumbs, Button, Card, CardContent, CardHeader, Grid, IconButton, styled, Tab, Tabs, ThemeProvider, Tooltip, Typography } from "@mui/material";
 import { TabPanel } from "./TabPanel";
 import BuildIcon from '@mui/icons-material/Build';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -30,19 +30,25 @@ export function StepOverview(props: Props){
     );
 
     return (
-        <div className="root-container">
-            <Breadcrumbs aria-label="breadcrumb">
-                <StyledLink color="inherit" to="/">
-                    Home
-                </StyledLink>
-                <StyledLink
-                    color="inherit"
-                    to={`/task/${id}`}
-                >
-                Task
-                </StyledLink>
-                <Typography color="text.primary">Subtask</Typography>
-            </Breadcrumbs>
+        <Grid container sx={{height: '100%'}} spacing={2} direction="column">
+
+        <Grid item xs="auto"> 
+            <div style={{marginTop: "5px"}}>
+                <Breadcrumbs aria-label="breadcrumb">
+                    <StyledLink color="inherit" to="/">
+                        Home
+                    </StyledLink>
+                    <StyledLink
+                        color="inherit"
+                        to={`/task/${id}`}
+                    >
+                    Task
+                    </StyledLink>
+                    <Typography color="text.primary">Subtask</Typography>
+                </Breadcrumbs>
+            </div>
+            </Grid>
+            <Grid item xs="auto"> 
             <h1>Mastercard #3: Fix Gearing Cover</h1>
             <h2>Page 3, Step 1: Install Engine Bottom Cover</h2>
             <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
@@ -52,6 +58,7 @@ export function StepOverview(props: Props){
                     <Tab label="WIKI" />
                 </Tabs>
             </Box>
+            </Grid>
             <TabPanel value={tabIndex} index={0}>
                 {renderOverviewTabPanel()}
             </TabPanel>
@@ -62,7 +69,7 @@ export function StepOverview(props: Props){
                 {renderWikiTabPanel()}
             </TabPanel>
 
-        </div>
+        </Grid>
     );
    
 
