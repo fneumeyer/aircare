@@ -7,6 +7,11 @@ import {
     useParams
   } from "react-router-dom";
 
+import { Document, Page } from 'react-pdf/dist/esm/entry.webpack5';
+
+// Related stackoverflow post: https://stackoverflow.com/questions/63569578/typescript-type-declarations-for-pdf-file
+import sample from './../assets/regal.pdf';
+//const urlPdf =  "https://www.ikea.com/de/de/assembly_instructions/enhet-unterschrank-fuer-ofen-mit-schubl-weiss__AA-2195104-5-2.pdf";
 
 type Props = {
 
@@ -50,6 +55,9 @@ export function SubtaskOverview(props: Props){
     const  [textWorkerInput, setTextWorkerInput] = React.useState("");
     const [workers, setWorkers] = React.useState<Worker[]>([{id: "abc", name: "Lutian"}]);
     const [tabIndex, setTabIndex] = React.useState<number>(0);
+
+    const [numPages, setNumPages] = React.useState<number>(0);
+  const [pageNumber, setPageNumber] = React.useState(1);
 
     const navigate = useNavigate()
     const openStepDetails = useCallback(
@@ -184,9 +192,29 @@ export function SubtaskOverview(props: Props){
         // TODO: Mastercard rendering
         return (
             <div>
-                <h4>TODO: Render Mastercard</h4>
+                <Document
+                    file={sample}
+                    onLoadSuccess={onDocumentLoadSuccess}
+                    
+                    >
+                    {Array.from(
+                        new Array(numPages),
+                        (el, index) => (
+                        <Page
+                            renderTextLayer={false}
+                            key={`page_${index + 1}`}
+                            pageNumber={index + 1}
+                        />
+                        ),
+                    )}
+                    </Document>
             </div>
         );
+    }
+
+    function onDocumentLoadSuccess() {
+        setNumPages(12);
+        console.log("num pages");
     }
    
 
