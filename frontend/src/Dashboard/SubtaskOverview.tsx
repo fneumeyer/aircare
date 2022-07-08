@@ -8,6 +8,7 @@ import {
   } from "react-router-dom";
 
 import { Document, Page } from 'react-pdf/dist/esm/entry.webpack5';
+import {PDFDocumentProxy} from 'pdfjs-dist';
 
 // Related stackoverflow post: https://stackoverflow.com/questions/63569578/typescript-type-declarations-for-pdf-file
 import sample from './../assets/regal.pdf';
@@ -194,7 +195,7 @@ export function SubtaskOverview(props: Props){
             <div>
                 <Document
                     file={sample}
-                    onLoadSuccess={onDocumentLoadSuccess}
+                    onLoadSuccess={pdf => setNumPages(pdf.numPages )}
                     
                     >
                     {Array.from(
@@ -212,10 +213,10 @@ export function SubtaskOverview(props: Props){
         );
     }
 
-    function onDocumentLoadSuccess() {
-        setNumPages(12);
+    /*function onDocumentLoadSuccess(pdf: PDFDocumentProxy) {
+        setNumPages(pdf.numPages );
         console.log("num pages");
-    }
+    }*/
    
 
 
