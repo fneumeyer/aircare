@@ -62,7 +62,8 @@ export function SubtaskOverview(props: Props){
     const  [textWorkerInput, setTextWorkerInput] = React.useState("");
     const [workers, setWorkers] = React.useState<Worker[]>([{id: "abc", name: "Lutian"}]);
     const [tabIndex, setTabIndex] = React.useState<number>(0);
-    const [scaleIndex, setScaleIndex] = React.useState<number>(4);
+
+    const [scaleIndex, setScaleIndex] = React.useState<number>(2); // default value 1.0
     const scalesValues : number[] = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
     const scaleTexts = ["50%", "75%",  "100%", "125%", "150%", "200%"];
     /*const [users, setUsers] = useState<IUser[]>([]);
@@ -283,9 +284,7 @@ export function SubtaskOverview(props: Props){
         return (
             <Box sx={{ flexGrow: 1 }}>
                 <Grid container direction="row" justifyContent="center" alignItems="center" spacing={3}>
-                    <Grid container justifyContent="center" item xs>
-                        
-                    </Grid>
+                   
                     <Grid container justifyContent="center" item xs>
                         <IconButton onClick={onMinusClick}>
                             <RemoveIcon></RemoveIcon>
@@ -313,9 +312,7 @@ export function SubtaskOverview(props: Props){
                             <AddIcon></AddIcon>
                         </IconButton>
                     </Grid>
-                    <Grid container justifyContent="center" item xs>
-                        
-                    </Grid>
+                   
                 </Grid>
           </Box>
         );
@@ -336,6 +333,8 @@ export function SubtaskOverview(props: Props){
     function handleScaleSelectChange(event: SelectChangeEvent<number>) {
         setScaleIndex(Number(event.target.value));
     }
+
+    
 
     function handleTabChange(event: React.SyntheticEvent, newValue: number) {
         setTabIndex(newValue);
