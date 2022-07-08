@@ -48,3 +48,79 @@ body{
     transform: rotate(360deg);
   }
 }
+
+
+
+#question-section-text {
+  text-align: left;
+}
+#question-position-text {
+  float: right;
+  color: green;
+}
+#question-text-input {
+  font-size: 40px;
+}
+#question-unit-text {
+  padding-left: 20px;
+  font-size: 40px;
+}
+.question-header-container {
+  margin-top: 20px;
+}
+.question-input-container {
+  margin-top: 50px;
+  text-align: center;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.question-checkbox-container {
+  display: flex;
+  flex-direction: column;
+  /*align-items: center;*/
+  padding-left: 20px;
+  margin-top: 50px;
+  text-align: center;
+}
+.button-bottom-container {
+  margin: 10px;
+  display: flex;
+  justify-content: space-around;
+}
+.button-bottom-container-inner{
+  margin: 20px;
+  margin-top: 30px;
+}
+.chk-correct {
+  color: green;
+}
+.chk-incorrect {
+  color: red;
+}
+
+/* Subtask Overview */
+.assigned-workers-container-inner {
+  display: inline-block;
+  overflow: hidden;
+  margin-right: 20px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+.assigned-workers-container-outer {
+  align-items: center;
+  display: flex;
+  justify-content: left;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.label-warning {
+  color: orange;
+}
+/* StepOverview*/
+.parts-row-container {
+  align-items: center;
+  display: flex;
+  justify-content: left;
+  flex-direction: row;
+}

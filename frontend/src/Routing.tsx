@@ -3,7 +3,10 @@ import { Routes, Route, useNavigate } from "react-router-dom"
 import { useAuth } from "./Authentication/useAuth"
 import { Dashboard } from "./Dashboard/Dashboard"
 import { EngineList } from "./Engines/EngineList"
+import {SubtaskOverview} from "./Dashboard/SubtaskOverview"
+import {Question} from "./Questions/Question"
 import SignIn from "./SignIn"
+import { StepOverview } from "./Dashboard/StepOverview"
 
 export function Routing(){
 
@@ -32,6 +35,18 @@ export function Routing(){
       <Route 
         path="/login" 
         element={<SignIn />}>
+      </Route>
+      <Route
+        path="/task/:id"
+        element={<SubtaskOverview />}>
+      </Route>
+      <Route
+        path="/task/:id/step/:stepId"
+        element={<StepOverview />}>
+      </Route>
+      <Route
+        path="/task/:id/step/:stepId/question"
+        element={<Question />} >
       </Route>
     </Routes>
   )
