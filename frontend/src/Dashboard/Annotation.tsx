@@ -52,7 +52,6 @@ export function Annotation({annotation}: Props){
                   <Grid spacing={2} container>
                     <Grid item xs={12}>
                       {annotation?.text}
-                      <Divider></Divider>
                     </Grid>
                     <Grid item xs>
                       <TextField multiline sx={{width: "100%", padding: '0'}} label="Add comment" variant="outlined" />

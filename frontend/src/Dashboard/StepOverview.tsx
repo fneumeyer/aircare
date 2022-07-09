@@ -179,11 +179,18 @@ export function StepOverview(props: Props){
                 <ToolsCard/>
                 <PartsCard/>
                 <DescriptionCard/>
-                <div className="button-bottom-container">
-                    <Button color="actionbutton2" variant="contained" onClick={openPrevious}>PREVIOUS STEP</Button>
-                    <Button color="actionbuttonblue"  variant="contained" onClick={openQuestions} >VIEW QUESTIONS</Button>
-                    <Button color="actionbuttonblue" disabled={false}  variant="contained" onClick={onFinishStepClick}>FINISH STEP</Button>
-                </div>
+                
+                <Grid container spacing={1}>
+                    <Grid item xs={4}>
+                        <Button fullWidth sx={{margin: 0}} color="actionbutton2" variant="contained" onClick={openPrevious}>PREVIOUS STEP</Button>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <Button fullWidth sx={{margin: 0}} color="actionbuttonblue"  variant="contained" onClick={openQuestions} >VIEW QUESTIONS</Button>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <Button fullWidth sx={{margin: 0}} color="actionbuttonblue" disabled={false}  variant="contained" onClick={onFinishStepClick}>FINISH STEP</Button>
+                    </Grid>
+                </Grid>
             </div>
         );
     }
