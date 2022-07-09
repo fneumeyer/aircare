@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import {Box, Breadcrumbs, Button, FormControl, Grid, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, styled, Tab, Tabs, Typography } from "@mui/material";
 import { TabPanel } from "./TabPanel";
 import AddIcon from '@mui/icons-material/Add';
@@ -11,13 +11,81 @@ import sample from './../assets/regal.pdf';
 import { ToolsCard } from "./ToolsCard";
 import { PartsCard } from "./PartsCard";
 import { DescriptionCard } from "./DescriptionCard";
+import { Annotation } from "./Annotation";
 
 
 type Props = {
 
 }
 
+export type Position = {
+    x: number;
+    y: number;
+}
 
+export type PDFLocation = {
+    page: number;
+    position: Position;
+}
+
+export type AnnotationType = 'comment' | 'box'
+
+export type PDFAnnotation = {
+    type: AnnotationType;
+    author?: string;
+    icon?: string;
+    location: PDFLocation;
+    text?: string;
+}
+
+export type PDFComment = PDFAnnotation & {
+    type: "comment";
+    text: string;
+}
+
+export type PDFBox = PDFAnnotation & {
+    type: 'box';
+    location2: PDFLocation;
+}
+
+const samplePageNumber = 4;
+
+const sampleComment: PDFComment = {
+    type: "comment",
+    icon: "comment",
+    author: "Clara Iversen",
+    location: {
+        page: samplePageNumber,
+        position: {
+            x: 30,
+            y: 30,
+        }
+    },
+    text: "The sealing often slips here, check twice!"
+}
+
+const sampleBoxAnnotation: PDFBox = {
+    type: "box",
+    location: {
+        page: samplePageNumber,
+        position: {
+            x: 50,
+            y: 50,
+        }
+    },
+    location2: {
+        page: samplePageNumber,
+        position: {
+            x: 60,
+            y: 60,
+        }
+    }
+}
+
+const annotations: PDFAnnotation[] = [
+    sampleComment,
+    sampleBoxAnnotation,
+]
 
 const StyledLink = styled(Link)(({theme}) => ({
     textDecoration: 'none'
@@ -31,7 +99,21 @@ export function StepOverview(props: Props){
     const scalesValues : number[] = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
     const scaleTexts = ["50%", "75%",  "100%", "125%", "150%", "200%"];
     const [numPages, setNumPages] = React.useState<number>(0);
-    const [pageNumber, setPageNumber] = React.useState(0); // start at 0
+    const [pageNumber, setPageNumber] = React.useState(samplePageNumber); // start at 0
+
+    const annotationMap = useMemo(() => {
+        const map = new Map<number, PDFAnnotation[]>();
+        annotations.forEach(annotation => {
+            let mappedAnnotations = map.get(annotation.location.page);
+            if(!mappedAnnotations){
+                mappedAnnotations = [annotation];
+                map.set(annotation.location.page, mappedAnnotations);
+            } else {
+                mappedAnnotations.push(annotation);
+            }
+        });
+        return map;
+    }, [])
 
     const navigate = useNavigate()
     const openQuestions = useCallback(
@@ -81,7 +163,7 @@ export function StepOverview(props: Props){
                     {renderQuestionTabPanel()}
                 </TabPanel>
                 <TabPanel value={tabIndex} index={2}>
-                    {<MastercardTabPanel />}
+                    {<MastercardTabPanel scrollToPage={pageNumber} annotations={annotationMap} />}
                 </TabPanel>
                 <TabPanel value={tabIndex} index={3}>
                     {renderWikiTabPanel()}
@@ -130,9 +212,11 @@ export function StepOverview(props: Props){
     }
 
     function MastercardTabPanel({
-        scrollToPage
+        scrollToPage,
+        annotations,
     }: {
-        scrollToPage?: number
+        scrollToPage?: number,
+        annotations?: Map<number, PDFAnnotation[]>,
     }) {
         const [renderCounter, setRenderCounter] = React.useState(0) // Just here to force a rerender
 
@@ -160,17 +244,21 @@ export function StepOverview(props: Props){
                     >
                     {Array.from(
                         new Array(numPages),
-                        (el, index) => (
-                        <Box ref={index === scrollToPage ? pageRef : undefined}>
-                            <Page
-                                scale={scalesValues[scaleIndex]}
-                                onRenderSuccess={index === scrollToPage ? () => setRenderCounter(renderCounter+1) : undefined}
-                                renderTextLayer={false}
-                                key={`page_${index + 1}`}
-                                pageNumber={index + 1}
-                            />
-                        </Box>
-                        ),
+                        (el, index) => {
+                            const pageAnnotations = annotations?.get(index + 1);
+                        return (
+                            <Box sx={{paddingBottom: '5px'}} position={'relative'} ref={(index + 1) === scrollToPage ? pageRef : undefined}>
+                                {pageAnnotations?.map(annotation => <Annotation annotation={annotation} />)}
+                                <Page
+                                    scale={scalesValues[scaleIndex]}
+                                    onRenderSuccess={index === scrollToPage ? () => setRenderCounter(renderCounter+1) : undefined}
+                                    renderTextLayer={false}
+                                    key={`page_${index + 1}`}
+                                    pageNumber={index + 1}
+                                />
+                            </Box>
+                        )
+                        },
                     )}
                 </Document>
             </Box>

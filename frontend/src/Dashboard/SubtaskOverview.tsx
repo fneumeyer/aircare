@@ -19,6 +19,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import SettingsIcon from '@mui/icons-material/Settings';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import { AddWorkerDialog } from "./AddWorkerDialog";
 
 type Props = {
 
@@ -39,7 +40,7 @@ type StepRowType = {
     status: String,
     duration: number,
   ) {
-    return {id, name, questionResult, status, duration, };
+    return {id, name, questionResult, status, duration };
   }
 
 const rowData : StepRowType[] = [
@@ -49,7 +50,7 @@ const rowData : StepRowType[] = [
     createData(4, "Engine Cover Front Cover", "N/A", "Pending", 0),
 ]
 
-type Worker = {
+export type Worker = {
     id: string,
     name: string,
 }
@@ -58,35 +59,23 @@ const StyledLink = styled(Link)(({theme}) => ({
     textDecoration: 'none'
 }))
 
+const workersAvailable: Worker[] = [
+    {id: "0", name: "Lutian Zhang"},
+    {id: "1", name: "Maximilian Geitner"},
+    {id: "2", name: "Maximilian Pfleger"},
+    {id: "3", name: "Clara Iversen"},
+    {id: "4", name: "Felix Neumeyer"},
+  ]
+
 export function SubtaskOverview(props: Props){
     let { id, } = useParams();
-    const [open, setOpen] = React.useState(false);
-    const  [textWorkerInput, setTextWorkerInput] = React.useState("");
-    const [workers, setWorkers] = React.useState<Worker[]>([{id: "abc", name: "Lutian"}]);
+    
+    const [addWorkerDialogOpen, setAddWorkerDialogOpen] = React.useState(false);
+    const [workers, setWorkers] = React.useState<Worker[]>([workersAvailable[0]]);
     const [tabIndex, setTabIndex] = React.useState<number>(0);
-
     const [scaleIndex, setScaleIndex] = React.useState<number>(2); // default value 1.0
     const scalesValues : number[] = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
     const scaleTexts = ["50%", "75%",  "100%", "125%", "150%", "200%"];
-    /*const [users, setUsers] = useState<IUser[]>([]);
-    
-    useEffect(() => {
-        client.service('users').find({
-            query: {
-                $limit: 100
-            }
-        }).then(users => {
-            setUsers(users)
-        })
-    }, [])
-    
-    const filteredWorkers = useMemo<IUser[]>(() => {
-        return users.filter(worker => {
-            const match = `${worker.firstName} ${worker.lastName}`.match(`${textWorkerInput}`);
-            return match !== null;
-        })
-    }, [textWorkerInput, workers])*/
-
     const [numPages, setNumPages] = React.useState<number>(0);
     const [pageNumber, setPageNumber] = React.useState(0); // start at 0
 
@@ -95,7 +84,7 @@ export function SubtaskOverview(props: Props){
         () => {
         navigate(`/task/${id}/step/${1}`)
         },
-        [navigate]
+        [id, navigate]
     );
 
     return <>
@@ -130,29 +119,7 @@ export function SubtaskOverview(props: Props){
                 </TabPanel>
             </Grid>
         </Grid>
-        <Dialog open={open} onClose={() => handleClose('cancel')}>
-                <DialogTitle>Add Worker</DialogTitle>
-                <DialogContent>
-                <DialogContentText>
-                    Please enter the name of the worker:
-                </DialogContentText>
-                <TextField
-                    value={textWorkerInput}
-                    onChange={handleTextChange}
-                    autoFocus
-                    margin="dense"
-                    id="name"
-                    label="Full name"
-                    type="name"
-                    fullWidth
-                    variant="standard"
-                />
-                </DialogContent>
-                <DialogActions>
-                <Button onClick={() =>handleClose('cancel')}>CANCEL</Button>
-                <Button onClick={() => handleClose('add')}>Add</Button>
-                </DialogActions>
-            </Dialog>
+        <AddWorkerDialog open={addWorkerDialogOpen} onClose={onWorkerDialogClose} workersAvailable={workersAvailable} />
     </>;
 
     function FirstTabPanel() {
@@ -279,7 +246,7 @@ export function SubtaskOverview(props: Props){
                     {Array.from(
                         new Array(numPages),
                         (el, index) => (
-                        <Box ref={index === scrollToPage ? pageRef : undefined}>
+                        <Box sx={{paddingBottom: '5px'}} ref={index === scrollToPage ? pageRef : undefined}>
                             <Page
                                 scale={scalesValues[scaleIndex]}
                                 onRenderSuccess={index === scrollToPage ? () => setRenderCounter(renderCounter+1) : undefined}
@@ -356,23 +323,17 @@ export function SubtaskOverview(props: Props){
     }
 
     function onAddWorkerClick() {
-        setOpen(true);
+        setAddWorkerDialogOpen(true);
     }
 
-    function handleTextChange(event: React.ChangeEvent<HTMLInputElement>) {
-        setTextWorkerInput(event.target.value);
-    }
-
-    function handleClose(event: string) {
-        if(event === "add" && textWorkerInput !== "") {
-            let list = workers.concat([{id: textWorkerInput, name: textWorkerInput}]);
-            setWorkers(list)
-            setTextWorkerInput(""); // reset text input
-            setOpen(false);
-            // TODO: Add Worker
-        }else if(event === "cancel") {
-            setOpen(false);
+    function onWorkerDialogClose(worker?: Worker){
+        if(worker && !workers.find(w => w.id === worker.id)){
+            setWorkers((workers) => {
+                const newWorkers = workers.concat(worker);
+                return newWorkers;
+            })
         }
+        setAddWorkerDialogOpen(false);
     }
 
     function handleClick(worker: Worker, index: number) {
