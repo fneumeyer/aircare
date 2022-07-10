@@ -1,8 +1,12 @@
-import { Card, Grid, Typography, useTheme } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { Box, Card, CardActionArea, Grid, Typography, useTheme } from '@mui/material'
+import { useState } from 'react'
 import {ITask} from '../../../backend/src/models/tasks.model'
 import { Types } from 'mongoose';
 import { TaskItem } from './TaskItem'
+import AnalyticsIcon from '@mui/icons-material/Analytics';
+import SchoolIcon from '@mui/icons-material/School';
+import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
+
 type Props = {
 
 }
@@ -35,11 +39,6 @@ export function Dashboard(props: Props){
 
   const theme = useTheme()
 
-  useEffect(() => {
-    // TODO: Get typed data from backend
-    // client.service('engines').find(...)
-  }, [])
-
   return <Grid container direction={'column'} sx={{height: '100%'}} justifyContent={'space-between'} spacing={1}>
     <Grid item>
       <Typography variant="h2">Task Overview</Typography>
@@ -55,31 +54,45 @@ export function Dashboard(props: Props){
 
     <Grid item>
       <Typography variant="h2">Resources</Typography>
-
       <Grid container spacing={2}>
         <Grid item xs={4}>
-          <Card sx={{borderRadius: '10px', padding: '20px', height: '128px'}}>
-            <Typography variant="h5">
-              Text A
-            </Typography>
-          </Card>
+          <CardActionArea>
+            <Card sx={{borderRadius: '10px', padding: '20px', height: '160px'}}>
+              <Box display='flex' height={'100%'} flexDirection='column' alignItems='center' justifyContent='space-between'>
+              <Typography variant="h5" textAlign={'center'}>
+                Maintenance Progress
+              </Typography>
+              <AnalyticsIcon sx={{marginTop: '10px', fontSize: '48px'}} />
+              </Box>              
+            </Card>
+          </CardActionArea>
         </Grid>
 
         <Grid item xs={4}>
-            <Card sx={{borderRadius: '10px', padding: '20px', height: '128px'}}>
-              <Typography variant="h5">
-              Text B
-              </Typography>
+          <CardActionArea>
+            <Card sx={{borderRadius: '10px', padding: '20px', height: '160px'}}>
+              <Box display='flex' height={'100%'} flexDirection='column' alignItems='center' justifyContent='space-between'>
+                <Typography variant="h5" textAlign={'center'}>
+                  Knowledge Hub
+                </Typography>
+                <SchoolIcon sx={{marginTop: '10px', fontSize: '48px'}} />
+              </Box>              
             </Card>
-          </Grid>
+          </CardActionArea>
+        </Grid>
 
-          <Grid item xs={4}>
-            <Card sx={{borderRadius: '10px', padding: '20px', height: '128px'}}>
-              <Typography variant="h5">
-                Text C
-              </Typography>
+        <Grid item xs={4}>
+          <CardActionArea>
+            <Card sx={{borderRadius: '10px', padding: '20px', height: '160px'}}>
+              <Box display='flex' height={'100%'} flexDirection='column' alignItems='center' justifyContent='space-between'>
+                <Typography variant="h5" textAlign={'center'}>
+                  Scanner
+                </Typography>
+                <QrCodeScannerIcon sx={{marginTop: '10px', fontSize: '48px'}} />
+              </Box>              
             </Card>
-          </Grid>
+          </CardActionArea>
+        </Grid>
       </Grid>
     </Grid>
   </Grid>
