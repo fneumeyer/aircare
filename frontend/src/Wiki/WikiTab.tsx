@@ -33,7 +33,7 @@ const wikiCardWarning : WikiCardContent = {
 }
 const wikiCardChangelog: WikiCardContent = {
     author: "Administrator",
-    date: "May 4th, 2022",
+    date: "May 4, 2022",
     title: "Mastercard #3 Changes: New Graphics",
     text: "Some of the new graphics have been added to the document on page 11 and 12. Additionally, two people are recommended for step 1.",
     cardType: "change-notification",
