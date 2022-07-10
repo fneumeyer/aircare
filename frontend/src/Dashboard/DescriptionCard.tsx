@@ -28,7 +28,7 @@ export function DescriptionCard(props: DescriptionCardProps) {
                 <ul>
                     {props.description.map(item => {
                         return (
-                        <li>{item}</li>
+                        <li key={item}>{item}</li>
                         );
                     })}
                 </ul>

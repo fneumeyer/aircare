@@ -34,7 +34,7 @@ export function ToolsCard(props : ToolProps) {
                     {
                         props.tools.map(item => {
                             return (
-                                <li>{item}</li>
+                                <li  key={"tools-" + item}>{item}</li>
                             );
                         })
                     }

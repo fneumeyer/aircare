@@ -35,7 +35,7 @@ export function PartsCard(props : PartsCardProps) {
                     {
                         props.parts.map(item => {
                             return (
-                                <li>
+                                <li key={"parts-" + item.name}>
                                     <div className="parts-row-container">
                                         <span>{item.name}</span>
                                         {item.similarItem?

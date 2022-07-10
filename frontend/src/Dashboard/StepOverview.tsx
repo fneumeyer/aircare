@@ -14,6 +14,7 @@ import { DescriptionCard } from "./DescriptionCard";
 import { Annotation } from "./Annotation";
 import { exampleQuestions, QuestionData, QuestionState } from "../Questions/QuestionType";
 import { QuestionTab } from "../Questions/QuestionTab";
+import { WikiTab } from "../Wiki/WikiTab";
 
 
 type Props = {
@@ -134,6 +135,15 @@ export function StepOverview(props: Props){
     //    },
     //    [id, navigate, stepId]
     //);
+
+    const openMastercardLink = useCallback(
+        (page:number) => {
+            setPageNumber(page);
+            setTabIndex(2);
+            console.log(page)
+        },[setPageNumber, setTabIndex]
+    )
+
     function openQuestions() {
         setTabIndex(1);
     }
@@ -181,7 +191,7 @@ export function StepOverview(props: Props){
                     {<MastercardTabPanel scrollToPage={pageNumber} annotations={annotationMap} />}
                 </TabPanel>
                 <TabPanel value={tabIndex} index={3}>
-                    {renderWikiTabPanel()}
+                    <WikiTabPanel></WikiTabPanel>
                 </TabPanel>
             </Grid>
         </Grid>
@@ -343,10 +353,10 @@ export function StepOverview(props: Props){
         setScaleIndex(Number(event.target.value));
     }
 
-    function renderWikiTabPanel() {
+    function WikiTabPanel() {
         return (
             <div>
-                <h4>TODO: WIKI Page</h4>
+                <WikiTab openLink={openMastercardLink}></WikiTab>
                 <h4>TODO: Display some tips, warnings, changes</h4>
             </div>
         );
