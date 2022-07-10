@@ -2,11 +2,13 @@ import { Checkbox, FormControlLabel } from "@mui/material";
 import React, { useState } from "react";
 import { AnswerOption, generateAnswerOptions, QuestionData, QuestionState } from "./QuestionType";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { ResponseStatusIcon } from "./ResponseStatusIcon";
 
 type QuestionCheckboxProps = {
     question: QuestionData,
     //answerOptions: AnswerOption[],
     state: QuestionState,
+    setUserResponse: (value: boolean) => void,
     //handleCheckboxChange: (index: number, event: React.ChangeEvent<HTMLInputElement>) => void,
 }
 
@@ -69,7 +71,11 @@ export function QuestionCheckbox(props : QuestionCheckboxProps) {
             // result-mode
             return (
                 <div>
-                    <h2>{props.question.title}</h2>
+                    <div className="row-container">
+                        <ResponseStatusIcon tag="textfield" correctUserResponse={props.question.correctUserResponse === true}/>
+                        <h2>{props.question.title}</h2>
+                    </div>
+                    
                     <div className="result-container">
                         <ul>
                             {props.question.correctAnswers.map(answer => {
@@ -86,6 +92,8 @@ export function QuestionCheckbox(props : QuestionCheckboxProps) {
         return null; // CASE type !== "checkbox"
     }
 
+
+
     function handleCheckboxChange(index: number, event: React.ChangeEvent<HTMLInputElement>) {
         if(props.state === "question-mode"&& props.question.type==="checkbox") {
             // if answers are accepted, change value
@@ -95,7 +103,8 @@ export function QuestionCheckbox(props : QuestionCheckboxProps) {
             nextArray.push(nextObj)
             nextArray = nextArray.concat(answerOptions.slice(index + 1, answerOptions.length))
             setAnswerOptions(nextArray);
-            
+            const isCorrectAnswer = nextArray.filter(item => item.isCorrect === item.userValue).length === nextArray.length;
+            props.setUserResponse(isCorrectAnswer);
         }
     }
 }

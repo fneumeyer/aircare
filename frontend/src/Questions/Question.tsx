@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import "./../App.css"
 import { QuestionCheckbox } from "./QuestionCheckbox";
 import { QuestionTextfield } from "./QuestionTextfield";
-import { AnswerOption, exampleQuestions, QuestionData, QuestionState } from "./QuestionType";
+import { AnswerOption, exampleQuestions, QuestionData, QuestionState, applyUserResponse } from "./QuestionType";
 
 type Props = {
 
@@ -20,7 +20,6 @@ export function Question (prop: Props) {
     let [questionData, setQuestionData] = useState<QuestionData[]>(exampleQuestions);
     let [questionState, setQuestionState] = useState<QuestionState>("question-mode");
     let currentQuestion = questionData[currentQuestionIndex];
-    let [textInput, setTextInput] = useState<string>("");
 
 
 
@@ -41,8 +40,8 @@ export function Question (prop: Props) {
                     <span id="question-position-text">{"Question " + (currentQuestionIndex+1) + "/" + questionData.length}</span>
                 </div>
                 <h2>{currentQuestion.title}</h2>
-                {<QuestionTextfield questionData={currentQuestion} state={questionState} text={textInput} onChangeCallback={handleChange}/>}
-                {<QuestionCheckbox  key={"question-checkbox-"+currentQuestionIndex}  question={currentQuestion} state={questionState}/>}
+                {<QuestionTextfield questionData={currentQuestion} state={questionState} setUserResponse={(correctAnswer)=>setUserResponse(currentQuestionIndex, correctAnswer)}/>}
+                {<QuestionCheckbox  key={"question-checkbox-"+currentQuestionIndex}  question={currentQuestion} state={questionState} setUserResponse={(correctAnswer)=>setUserResponse(currentQuestionIndex, correctAnswer)}/>}
                 
                 <div className="button-bottom-container">
                     <div className="button-bottom-container-inner">
@@ -52,6 +51,10 @@ export function Question (prop: Props) {
         </div>
     );
 
+
+    function setUserResponse(index: number, correctAnswer: boolean) {
+        setQuestionData(applyUserResponse(questionData, index, correctAnswer));
+    }
     
     // event to submit an answer
     function onSubmitClick() {
@@ -69,10 +72,6 @@ export function Question (prop: Props) {
             // switch to task screen
             openStepOverview();
         }
-    }
-
-    function handleChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-        setTextInput(event.target.value);
     }
 
     function renderButtons() {

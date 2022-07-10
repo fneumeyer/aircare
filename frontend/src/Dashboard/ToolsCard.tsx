@@ -3,7 +3,14 @@ import { ColoredIcon } from "./ColoredIcon";
 import BuildIcon from '@mui/icons-material/Build';
 import SettingsIcon from '@mui/icons-material/Settings';
 
-export function ToolsCard() {
+
+
+
+type ToolProps = {
+    tools: String[],
+}
+
+export function ToolsCard(props : ToolProps) {
     // #0354bf96
     // 34, 121, 236, 0.37: #2279ec5E
     return (
@@ -24,7 +31,13 @@ export function ToolsCard() {
             />
             <CardContent>
                 <ul>
-                    <li>Torque Wrench</li>
+                    {
+                        props.tools.map(item => {
+                            return (
+                                <li>{item}</li>
+                            );
+                        })
+                    }
                 </ul>
             </CardContent>
         </Card>

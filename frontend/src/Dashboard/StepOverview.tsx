@@ -93,6 +93,12 @@ const StyledLink = styled(Link)(({theme}) => ({
     textDecoration: 'none'
 }))
 
+// step overview data
+const toolsData = ["Torque Wrench"]
+
+const partsData = [{name: "Engine Cover Part 3", similarItem: "Engine Cover Part 4"}, {name: "Engine Cover Part 7"}]
+const descriptionData =  ["Fix the Engine Cover Part 7 with a torque wrench (25 Nm).", "Then, continue with Engine Cover part 3."]
+
 export function StepOverview(props: Props){
     let { id, stepId } = useParams();
     const [tabIndex, setTabIndex] = React.useState<number>(0);
@@ -185,9 +191,9 @@ export function StepOverview(props: Props){
     function renderOverviewTabPanel() {
         return (
             <div>
-                <ToolsCard/>
-                <PartsCard/>
-                <DescriptionCard/>
+                <ToolsCard tools={toolsData}/>
+                <PartsCard parts = {partsData}/>
+                <DescriptionCard description={descriptionData}/>
                 
                 <Grid container spacing={1}>
                     <Grid item xs={4}>
@@ -207,7 +213,7 @@ export function StepOverview(props: Props){
 
     function renderQuestionTabPanel() {
         return (
-            <QuestionTab questionIndex={currentQuestionIndex} setQuestionIndex={(value : number) => setCurrentQuestionIndex(value)} questionState={questionState} questionData={questionData} onQuestionStateChange={setQuestionState} onSubmitCallback={onSubmitAnswer} ></QuestionTab>
+            <QuestionTab questionIndex={currentQuestionIndex} setQuestionIndex={(value : number) => setCurrentQuestionIndex(value)} questionState={questionState} questionData={questionData} onQuestionStateChange={setQuestionState} onSubmitCallback={onSubmitAnswer} setQuestionData={setQuestionData}></QuestionTab>
         );
     }
 

@@ -1,17 +1,21 @@
 import { FilledInput, FormControl, IconButton, InputAdornment, Tooltip } from "@mui/material";
 import { useState } from "react";
 import { QuestionData, QuestionState } from "./QuestionType";
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { ColoredIcon } from "../Dashboard/ColoredIcon";
+import { ResponseStatusIcon } from "./ResponseStatusIcon";
+
+
 
 type QuestionTextfieldProp = {
     questionData: QuestionData,
     state: QuestionState,
-    text: string,
-    onChangeCallback: (event: React.ChangeEvent<HTMLInputElement| HTMLTextAreaElement>) => void, 
+    setUserResponse: (value: boolean) => void,
+    //onChangeCallback: (event: React.ChangeEvent<HTMLInputElement| HTMLTextAreaElement>) => void, 
 }
 
 export function QuestionTextfield (props: QuestionTextfieldProp) {
+    let [textInput, setTextInput] = useState<string>("");
+
+
     let solutionText = "";
     let solutionValue = "";
 
@@ -20,7 +24,7 @@ export function QuestionTextfield (props: QuestionTextfieldProp) {
         if(typeof(props.questionData.correctAnswer) === "number") {
             solutionValue = props.questionData.correctAnswer + " " + props.questionData.unit;
             // user input value must have a certain precision (0.00001)
-            if(Math.abs(props.questionData.correctAnswer - Number(props.text)) < 0.00001) {
+            if(isCorrectAnswer(textInput)) {
                 solutionText = ("The answer is correct!");
             }else {
                 solutionText = ("The answer is incorrect! Correct Value: " + solutionValue);
@@ -28,7 +32,7 @@ export function QuestionTextfield (props: QuestionTextfieldProp) {
         }else  if(typeof(props.questionData.correctAnswer) === "string") {
             solutionValue = props.questionData.correctAnswer;
             // string answer is case sensitive
-            if(props.questionData.correctAnswer === props.text) {
+            if(isCorrectAnswer(textInput)) {
                 solutionText = ("The answer is correct!");
             }else {
                 solutionText = ("The answer is incorrect! Correct Answer: " + props.questionData.correctAnswer);
@@ -44,8 +48,8 @@ export function QuestionTextfield (props: QuestionTextfieldProp) {
                             <FilledInput
                                 id="question-text-input" 
                                 endAdornment={<InputAdornment position="end">{props.questionData.unit}</InputAdornment>}
-                                value={props.text}
-                                onChange={(event) => props.onChangeCallback(event)}
+                                value={textInput}
+                                onChange={handleChange}
                             />
                         </FormControl>
                         
@@ -57,18 +61,15 @@ export function QuestionTextfield (props: QuestionTextfieldProp) {
             return (
                 <div>
                     <div className="row-container">
-
-                    {<Tooltip title="Correctly Answer">
-                        <IconButton disableRipple={true} disableTouchRipple={true}>
-                            <CheckCircleIcon inheritViewBox  sx={{color: "green", fontSize: "24px"}}></CheckCircleIcon>
-                        </IconButton>
-                    </Tooltip>}
+                    <ResponseStatusIcon tag="textfield" correctUserResponse={props.questionData.correctUserResponse === true}/>
                     <h2>{props.questionData.title}</h2>
                    
                     </div>
                    
                     <div className="result-container">
-                        <span> {"Correct Value: " + solutionValue}</span>
+                        <ul>
+                            <li>{solutionValue}</li>
+                        </ul>
                     </div>
                 </div>
             );
@@ -77,8 +78,25 @@ export function QuestionTextfield (props: QuestionTextfieldProp) {
         return null; // CASE Question.type !== "textfield"
     }
 
-    function isCorrectAnswer() {
+ 
 
+    function isCorrectAnswer(value: string) {
+        if(props.questionData.type === "textfield") {
+            // user input value must have a certain precision (0.00001)
+            if(typeof(props.questionData.correctAnswer) === "number") {
+                return Math.abs(props.questionData.correctAnswer - Number(value)) < 0.00001;
+            }else{
+                return props.questionData.correctAnswer === value;
+            }
+        }else {
+            return false;
+        }
     }
+
+    function handleChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+        setTextInput(event.target.value);
+        props.setUserResponse(isCorrectAnswer(event.target.value));
+    }
+    
 
 }

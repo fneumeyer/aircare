@@ -1,8 +1,8 @@
 type QuestionType = "textfield" | "checkbox" | "step-order";
 
 // TODO: Is caseSensitive Attribute required for textfield string answers?
-type QuestionData = {type: "textfield", context: string, title: string, correctAnswer: string | number, unit: string, } |
-    {type: "checkbox", context: string, title: string, correctAnswers: string[], incorrectAnswers: string[], answersToShow: number,}
+type QuestionData = {type: "textfield", context: string, title: string, correctAnswer: string | number, unit: string, correctUserResponse?: boolean} |
+    {type: "checkbox", context: string, title: string, correctAnswers: string[], incorrectAnswers: string[], answersToShow: number, correctUserResponse?: boolean}
     
 
 type AnswerOption = {text: string, isCorrect: boolean, userValue: boolean}; // for checkbox state management
@@ -54,7 +54,16 @@ function shuffle(array: AnswerOption[]) {
     return array;
 }
 
-
+function applyUserResponse(questionData: QuestionData[], index: number, correctResponse: boolean) : QuestionData[] {
+    if(index >= 0 && index < questionData.length) {
+        let nextArray = questionData.slice(0, index);
+        nextArray = nextArray.concat({...questionData[index], correctUserResponse: correctResponse}).concat(questionData.slice(index + 1, questionData.length));
+        console.log(index, nextArray);
+        return nextArray;
+    }else{
+        return questionData;
+    }
+}
 
 export type {QuestionType, QuestionData, AnswerOption, QuestionState};
-export  {exampleQuestions, generateAnswerOptions};
+export  {exampleQuestions, generateAnswerOptions, applyUserResponse};

@@ -3,7 +3,11 @@ import { ColoredIcon } from "./ColoredIcon";
 import SettingsIcon from '@mui/icons-material/Settings';
 import DescriptionIcon from '@mui/icons-material/Description';
 
-export function DescriptionCard() {
+
+type DescriptionCardProps = {
+    description: string[],
+}
+export function DescriptionCard(props: DescriptionCardProps) {
     return (
         <Card style={{backgroundColor:"#2279ec5E", marginBottom: "10px", marginTop: "10px"}}>
             <CardHeader
@@ -22,8 +26,11 @@ export function DescriptionCard() {
             />
             <CardContent>
                 <ul>
-                    <li>Fix the Engine Cover Part 7 with a torque wrench (25 Nm).</li>
-                    <li>Then, continue with Engine Cover part 3.</li>
+                    {props.description.map(item => {
+                        return (
+                        <li>{item}</li>
+                        );
+                    })}
                 </ul>
             </CardContent>
         </Card>

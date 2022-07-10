@@ -4,7 +4,16 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
-export function PartsCard() {
+type PartsData = {
+    name: string,
+    similarItem?: string,
+}
+
+type PartsCardProps = {
+    parts: PartsData[],
+}
+
+export function PartsCard(props : PartsCardProps) {
     return (
         <Card style={{backgroundColor:"#2279ec5E", marginBottom: "10px", marginTop: "10px"}}>
             <CardHeader
@@ -23,15 +32,23 @@ export function PartsCard() {
             />
             <CardContent>
                 <ul>
-                    <li>
-                        <div className="parts-row-container">
-                            <span>Engine Cover Part 3</span>
-                            <Tooltip title="Similar to Engine Cover 4">
-                                <WarningAmberIcon style={{marginLeft: "10px"}}/>
-                            </Tooltip>
-                        </div>
-                    </li>
-                    <li>Engine Cover Part 7</li>
+                    {
+                        props.parts.map(item => {
+                            return (
+                                <li>
+                                    <div className="parts-row-container">
+                                        <span>{item.name}</span>
+                                        {item.similarItem?
+                                            <Tooltip title={`Similar to ${item.similarItem}`}>
+                                                <WarningAmberIcon style={{marginLeft: "10px"}}/>
+                                            </Tooltip> 
+                                            : null
+                                        }
+                                    </div>
+                                </li>
+                            )
+                        })
+                    }
                 </ul>
             </CardContent>
         </Card>
