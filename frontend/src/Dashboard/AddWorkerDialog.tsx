@@ -35,11 +35,28 @@ export function AddWorkerDialog({
   }
 
   const onSubmit = () => {
-    onClose(worker);
+    if(!worker) {
+      // add user, if only one worker matches text input and no worker has been selected
+      // undefined
+      let filteredWorkers = workersAvailable.filter(worker => {
+        return worker.name.toLowerCase().match(`${textWorkerInput.toLowerCase()}`)});
+      if(filteredWorkers.length === 1) {
+        onClose(filteredWorkers.at(0));
+      }
+    }else {
+      onClose(worker);
+    }
     setWorker(undefined);
+    setTextWorkerInput("");
+  }
+  const onCancel = () => {
+    // don't submit worker to list, reset textfield
+    onClose(undefined);
+    setWorker(undefined);
+    setTextWorkerInput("");
   }
 
-  return <Dialog open={open} onClose={() => onClose(worker)}>
+  return <Dialog open={open} onClose={onCancel}>
   <DialogTitle>Add Worker</DialogTitle>
   <DialogContent>
     <Container maxWidth="xs">
@@ -65,7 +82,7 @@ export function AddWorkerDialog({
     </Container>
   </DialogContent>
   <DialogActions>
-  <Button onClick={onSubmit}>CANCEL</Button>
+  <Button onClick={() => onCancel()}>CANCEL</Button>
   <Button onClick={onSubmit}>Add</Button>
   </DialogActions>
 </Dialog>

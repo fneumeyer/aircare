@@ -12,6 +12,8 @@ import { ToolsCard } from "./ToolsCard";
 import { PartsCard } from "./PartsCard";
 import { DescriptionCard } from "./DescriptionCard";
 import { Annotation } from "./Annotation";
+import { exampleQuestions, QuestionData, QuestionState } from "../Questions/QuestionType";
+import { QuestionTab } from "../Questions/QuestionTab";
 
 
 type Props = {
@@ -100,6 +102,10 @@ export function StepOverview(props: Props){
     const scaleTexts = ["50%", "75%",  "100%", "125%", "150%", "200%"];
     const [numPages, setNumPages] = React.useState<number>(0);
     const [pageNumber, setPageNumber] = React.useState(samplePageNumber); // start at 0
+    // for questions
+    let [questionState, setQuestionState] = React.useState<QuestionState>("question-mode");
+    let [questionData, setQuestionData] = React.useState<QuestionData[]>(exampleQuestions);
+    let [currentQuestionIndex, setCurrentQuestionIndex] = React.useState<number>(0);
 
     const annotationMap = useMemo(() => {
         const map = new Map<number, PDFAnnotation[]>();
@@ -116,12 +122,15 @@ export function StepOverview(props: Props){
     }, [])
 
     const navigate = useNavigate()
-    const openQuestions = useCallback(
-        () => {
-        navigate(`/task/${id}/step/${stepId}/question`)
-        },
-        [id, navigate, stepId]
-    );
+    //const openQuestions = useCallback(
+    //    () => {
+    //    navigate(`/task/${id}/step/${stepId}/question`)
+    //    },
+    //    [id, navigate, stepId]
+    //);
+    function openQuestions() {
+        setTabIndex(1);
+    }
 
     return (
         <Grid container sx={{height: '100%'}} spacing={2} direction="column">
@@ -198,8 +207,12 @@ export function StepOverview(props: Props){
 
     function renderQuestionTabPanel() {
         return (
-            <h4>TODO Question and Answer Tab</h4>
+            <QuestionTab questionIndex={currentQuestionIndex} setQuestionIndex={(value : number) => setCurrentQuestionIndex(value)} questionState={questionState} questionData={questionData} onQuestionStateChange={setQuestionState} onSubmitCallback={onSubmitAnswer} ></QuestionTab>
         );
+    }
+
+    function onSubmitAnswer(index: number, isCorrect: boolean) {
+        // TODO Backend communication
     }
 
     function openPrevious() {

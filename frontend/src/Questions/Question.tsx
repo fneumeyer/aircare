@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import "./../App.css"
 import { QuestionCheckbox } from "./QuestionCheckbox";
 import { QuestionTextfield } from "./QuestionTextfield";
-import { AnswerOption, QuestionData, QuestionState } from "./QuestionType";
+import { AnswerOption, exampleQuestions, QuestionData, QuestionState } from "./QuestionType";
 
 type Props = {
 
@@ -15,14 +15,11 @@ export function Question (prop: Props) {
     let [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
 
 
-    const exampleQuestions : QuestionData[] = [{type: "textfield", stepLocation: "Page 3: Section 2", title: "Please specify the used torque for this step: ", correctAnswer: 25, unit: "Nm"},
-        {type: "checkbox", stepLocation: "Page 3: Section 2", title: "Which of the following parts are used in the next step?", correctAnswers: ["Engine Cover Part 3", "Engine Cover Part 7"], incorrectAnswers: ["Engine Cover Part 1", "Engine Cover Part 5"], answersToShow: 4,},
-    ];
+    
 
     let [questionData, setQuestionData] = useState<QuestionData[]>(exampleQuestions);
     let [questionState, setQuestionState] = useState<QuestionState>("question-mode");
     let currentQuestion = questionData[currentQuestionIndex];
-    let [answerOptions, setAnswerOptions] = useState<AnswerOption[]>(initCurrentQuestion(0));
     let [textInput, setTextInput] = useState<string>("");
 
 
@@ -40,12 +37,12 @@ export function Question (prop: Props) {
         <div className="root-container">
                 <h1>Mastercard #3: Engine Covers</h1>
                 <div className="question-header-container">
-                    <span id="question-section-text">{currentQuestion.stepLocation}</span>
+                    <span id="question-section-text">{currentQuestion.context}</span>
                     <span id="question-position-text">{"Question " + (currentQuestionIndex+1) + "/" + questionData.length}</span>
                 </div>
                 <h2>{currentQuestion.title}</h2>
                 {<QuestionTextfield questionData={currentQuestion} state={questionState} text={textInput} onChangeCallback={handleChange}/>}
-                {<QuestionCheckbox questionData={currentQuestion} state={questionState} answerOptions={answerOptions} handleCheckboxChange={handleCheckboxChange}/>}
+                {<QuestionCheckbox  key={"question-checkbox-"+currentQuestionIndex}  question={currentQuestion} state={questionState}/>}
                 
                 <div className="button-bottom-container">
                     <div className="button-bottom-container-inner">
@@ -67,7 +64,6 @@ export function Question (prop: Props) {
             const nextValue = currentQuestionIndex + 1;
             setCurrentQuestionIndex(nextValue);
             setQuestionState("question-mode")
-            setAnswerOptions(initCurrentQuestion(nextValue));
         }else {
             // no question is available anymore
             // switch to task screen
@@ -87,25 +83,6 @@ export function Question (prop: Props) {
         }
     }
 
-
-    
-
-    
-    
-    function handleCheckboxChange(index: number, event: React.ChangeEvent<HTMLInputElement>) {
-        if(questionState === "question-mode") {
-            // if answers are accepted, change value
-            console.log(event.target.checked);
-            let nextArray = answerOptions.slice(0, index)
-            let nextObj : AnswerOption = {...answerOptions[index], userValue: event.target.checked};
-            nextArray.push(nextObj)
-            nextArray = nextArray.concat(answerOptions.slice(index + 1, answerOptions.length))
-            setAnswerOptions(nextArray);
-            console.log(answerOptions);
-        }else {
-           
-        }
-    }
 
     function initCurrentQuestion(index: number) {
         console.log("Call")

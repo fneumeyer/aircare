@@ -98,6 +98,15 @@ body{
 .chk-incorrect {
   color: red;
 }
+.result-container {
+  margin-top: 20px;
+  margin-bottom: 40px;
+  color: green;
+}
+.row-container{
+  display: flex;
+  flex-direction: row;
+}
 
 /* Subtask Overview */
 .assigned-workers-container-inner {
