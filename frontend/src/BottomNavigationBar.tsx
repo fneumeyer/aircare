@@ -1,6 +1,6 @@
 import { BottomNavigation, BottomNavigationAction, Paper } from "@mui/material";
-import { useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import HomeIcon from '@mui/icons-material/Home';
 import SearchIcon from '@mui/icons-material/Search';
@@ -11,20 +11,17 @@ export function BottomNavigationBar(){
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    switch(value){
-      case 0:
-        navigate('/');
-      break;
-    }
-  }, [navigate, value])
-
   return <Paper elevation={3}>
   <BottomNavigation
     showLabels
     value={value}
     onChange={(event, newValue) => {
       setValue(newValue);
+      switch(newValue){
+        case 0:
+          navigate('/');
+        break;
+      }
     }}
   >
     <BottomNavigationAction label="Home" icon={<HomeIcon />} />
