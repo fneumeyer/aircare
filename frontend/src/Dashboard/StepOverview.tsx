@@ -12,7 +12,7 @@ import { ToolsCard } from "./ToolsCard";
 import { PartsCard } from "./PartsCard";
 import { DescriptionCard } from "./DescriptionCard";
 import { Annotation } from "./Annotation";
-import { exampleQuestions, QuestionData, QuestionState } from "../Questions/QuestionType";
+import { AnswerOption, exampleQuestions, generateAnswerOptions, QuestionData, QuestionState } from "../Questions/QuestionType";
 import { QuestionTab } from "../Questions/QuestionTab";
 import { WikiTab } from "../Wiki/WikiTab";
 
@@ -113,6 +113,8 @@ export function StepOverview(props: Props){
     let [questionState, setQuestionState] = React.useState<QuestionState>("question-mode");
     let [questionData, setQuestionData] = React.useState<QuestionData[]>(exampleQuestions);
     let [currentQuestionIndex, setCurrentQuestionIndex] = React.useState<number>(0);
+    let [answerOptions, setAnswerOptions] = React.useState<AnswerOption[]>(generateAnswerOptions(questionData[currentQuestionIndex]));
+    let [textInput, setTextInput] = React.useState<string>("");
 
     const annotationMap = useMemo(() => {
         const map = new Map<number, PDFAnnotation[]>();
@@ -223,7 +225,7 @@ export function StepOverview(props: Props){
 
     function renderQuestionTabPanel() {
         return (
-            <QuestionTab questionIndex={currentQuestionIndex} setQuestionIndex={(value : number) => setCurrentQuestionIndex(value)} questionState={questionState} questionData={questionData} onQuestionStateChange={setQuestionState} onSubmitCallback={onSubmitAnswer} setQuestionData={setQuestionData}></QuestionTab>
+            <QuestionTab textInput={textInput} setTextInput={setTextInput} answerOptions={answerOptions} setAnswerOptions={setAnswerOptions} questionIndex={currentQuestionIndex} setQuestionIndex={(value : number) => setCurrentQuestionIndex(value)} questionState={questionState} questionData={questionData} onQuestionStateChange={setQuestionState} onSubmitCallback={onSubmitAnswer} setQuestionData={setQuestionData}></QuestionTab>
         );
     }
 

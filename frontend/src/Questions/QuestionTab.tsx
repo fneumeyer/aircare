@@ -2,7 +2,7 @@ import { Button } from "@mui/material";
 import { useState } from "react";
 import { QuestionCheckbox } from "./QuestionCheckbox";
 import { QuestionTextfield,  } from "./QuestionTextfield";
-import { AnswerOption, applyUserResponse, QuestionData, QuestionState } from "./QuestionType";
+import { AnswerOption, applyUserResponse, generateAnswerOptions, QuestionData, QuestionState } from "./QuestionType";
 
 
 type QuestionTabProps = {
@@ -13,13 +13,17 @@ type QuestionTabProps = {
     setQuestionIndex: (value: number) => void,
     onSubmitCallback: (index: number, isCorrectAnswer: boolean) => void,
     setQuestionData: (values: QuestionData[]) => void,
+    answerOptions: AnswerOption[],
+    setAnswerOptions: (array: AnswerOption[]) => void,
+    textInput: string,
+    setTextInput: (value: string) => void,
 }
 
 
 export function QuestionTab(props: QuestionTabProps) {
     
     
-    
+    //let [answerOptions, setAnswerOptions] = useState<AnswerOption[]>(generateAnswerOptions(props.questionData[props.questionIndex]));
     let currentQuestion = props.questionData[props.questionIndex];
 
     if(props.questionState==="question-mode" || props.questionState === "answer-mode") {
@@ -30,8 +34,8 @@ export function QuestionTab(props: QuestionTabProps) {
                         <span id="question-position-text">{"Question " + (props.questionIndex+1) + "/" + props.questionData.length}</span>
                     </div>
                     
-                    {<QuestionTextfield questionData={currentQuestion} state={props.questionState} setUserResponse={(correctAnswer)=>setUserResponse(props.questionIndex, correctAnswer)}/>}
-                    {<QuestionCheckbox key={"question-checkbox-"+props.questionIndex} question={currentQuestion} state={props.questionState} setUserResponse={(correctAnswer)=>setUserResponse(props.questionIndex, correctAnswer)}/>}
+                    {<QuestionTextfield textInput={props.textInput} setTextInput={props.setTextInput} key={"question-textfield-"+props.questionIndex} questionData={currentQuestion} state={props.questionState} setUserResponse={(correctAnswer)=>setUserResponse(props.questionIndex, correctAnswer)}/>}
+                    {<QuestionCheckbox {...props} key={"question-checkbox-"+props.questionIndex} question={currentQuestion} state={props.questionState} setUserResponse={(correctAnswer)=>setUserResponse(props.questionIndex, correctAnswer)}/>}
                     
                     <div className="button-bottom-container">
                         <div className="button-bottom-container-inner">
@@ -48,8 +52,8 @@ export function QuestionTab(props: QuestionTabProps) {
                     props.questionData.map((question, index) => {
                         return (
                             <div>
-                                <QuestionTextfield key={"question-textfield-"+index} questionData={question} state={props.questionState} setUserResponse={(correctAnswer)=>setUserResponse(index, correctAnswer)}/>
-                                <QuestionCheckbox key={"question-checkbox-"+index} question={question} state={props.questionState} setUserResponse={(correctAnswer)=>setUserResponse(index, correctAnswer)}/>
+                                <QuestionTextfield textInput={props.textInput} setTextInput={props.setTextInput} key={"question-textfield-"+index} questionData={question} state={props.questionState} setUserResponse={(correctAnswer)=>setUserResponse(index, correctAnswer)}/>
+                                <QuestionCheckbox {...props} key={"question-checkbox-"+index} question={question} state={props.questionState} setUserResponse={(correctAnswer)=>setUserResponse(index, correctAnswer)}/>
                             </div>
                         );
                     })
@@ -73,6 +77,8 @@ export function QuestionTab(props: QuestionTabProps) {
             const nextValue = props.questionIndex + 1;
             props.setQuestionIndex(nextValue);
             props.onQuestionStateChange("question-mode")
+            props.setAnswerOptions(generateAnswerOptions(props.questionData[nextValue]))
+            props.setTextInput("");
         }else {
             // no question is available anymore
             // switch to task screen

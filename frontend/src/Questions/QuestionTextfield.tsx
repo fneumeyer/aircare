@@ -1,5 +1,6 @@
-import { FilledInput, FormControl, IconButton, InputAdornment, Tooltip } from "@mui/material";
+import { Card, CardContent, FilledInput, FormControl, IconButton, InputAdornment, Tooltip } from "@mui/material";
 import { useState } from "react";
+import { ResultCard } from "./Questions.styled";
 import { QuestionData, QuestionState } from "./QuestionType";
 import { ResponseStatusIcon } from "./ResponseStatusIcon";
 
@@ -9,11 +10,13 @@ type QuestionTextfieldProp = {
     questionData: QuestionData,
     state: QuestionState,
     setUserResponse: (value: boolean) => void,
+    textInput: string,
+    setTextInput: (value: string) => void,
     //onChangeCallback: (event: React.ChangeEvent<HTMLInputElement| HTMLTextAreaElement>) => void, 
 }
 
 export function QuestionTextfield (props: QuestionTextfieldProp) {
-    let [textInput, setTextInput] = useState<string>("");
+    
 
 
     let solutionText = "";
@@ -24,7 +27,7 @@ export function QuestionTextfield (props: QuestionTextfieldProp) {
         if(typeof(props.questionData.correctAnswer) === "number") {
             solutionValue = props.questionData.correctAnswer + " " + props.questionData.unit;
             // user input value must have a certain precision (0.00001)
-            if(isCorrectAnswer(textInput)) {
+            if(isCorrectAnswer(props.textInput)) {
                 solutionText = ("The answer is correct!");
             }else {
                 solutionText = ("The answer is incorrect! Correct Value: " + solutionValue);
@@ -32,7 +35,7 @@ export function QuestionTextfield (props: QuestionTextfieldProp) {
         }else  if(typeof(props.questionData.correctAnswer) === "string") {
             solutionValue = props.questionData.correctAnswer;
             // string answer is case sensitive
-            if(isCorrectAnswer(textInput)) {
+            if(isCorrectAnswer(props.textInput)) {
                 solutionText = ("The answer is correct!");
             }else {
                 solutionText = ("The answer is incorrect! Correct Answer: " + props.questionData.correctAnswer);
@@ -48,7 +51,7 @@ export function QuestionTextfield (props: QuestionTextfieldProp) {
                             <FilledInput
                                 id="question-text-input" 
                                 endAdornment={<InputAdornment position="end">{props.questionData.unit}</InputAdornment>}
-                                value={textInput}
+                                value={props.textInput}
                                 onChange={handleChange}
                             />
                         </FormControl>
@@ -59,19 +62,21 @@ export function QuestionTextfield (props: QuestionTextfieldProp) {
             );
         }else {
             return (
-                <div>
-                    <div className="row-container">
-                    <ResponseStatusIcon tag="textfield" correctUserResponse={props.questionData.correctUserResponse === true}/>
-                    <h2>{props.questionData.title}</h2>
-                   
-                    </div>
-                   
-                    <div className="result-container">
-                        <ul>
-                            <li>{solutionValue}</li>
-                        </ul>
-                    </div>
-                </div>
+                <ResultCard>
+                    <CardContent>
+                        <div className="row-container">
+                        <ResponseStatusIcon tag="textfield" correctUserResponse={props.questionData.correctUserResponse === true}/>
+                        <h2>{props.questionData.title}</h2>
+                    
+                        </div>
+                    
+                        <div className="result-container">
+                            <ul>
+                                <li>{solutionValue}</li>
+                            </ul>
+                        </div>
+                    </CardContent>
+                </ResultCard>
             );
         }
     }else{
@@ -94,7 +99,7 @@ export function QuestionTextfield (props: QuestionTextfieldProp) {
     }
 
     function handleChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-        setTextInput(event.target.value);
+        props.setTextInput(event.target.value);
         props.setUserResponse(isCorrectAnswer(event.target.value));
     }
     

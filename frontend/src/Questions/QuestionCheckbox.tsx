@@ -1,32 +1,35 @@
-import { Checkbox, FormControlLabel } from "@mui/material";
+import { Card, CardContent, Checkbox, FormControlLabel } from "@mui/material";
 import React, { useState } from "react";
 import { AnswerOption, generateAnswerOptions, QuestionData, QuestionState } from "./QuestionType";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { ResponseStatusIcon } from "./ResponseStatusIcon";
+import { ResultCard } from "./Questions.styled";
 
 type QuestionCheckboxProps = {
     question: QuestionData,
     //answerOptions: AnswerOption[],
     state: QuestionState,
     setUserResponse: (value: boolean) => void,
+    answerOptions: AnswerOption[],
+    setAnswerOptions: (answerOptions: AnswerOption[]) => void,
     //handleCheckboxChange: (index: number, event: React.ChangeEvent<HTMLInputElement>) => void,
 }
 
 
 // className={!isQuestionState && item.userValue=== item.isCorrect ? "chk-correct": (!isQuestionState ? "chk-incorrect" : "")}
 export function QuestionCheckbox(props : QuestionCheckboxProps) {
-    let [answerOptions, setAnswerOptions] = useState<AnswerOption[]>(generateAnswerOptions(props.question));
+    //let [answerOptions, setAnswerOptions] = useState<AnswerOption[]>(generateAnswerOptions(props.question));
     
 
     let solutionText = "";
 
     if(props.question.type === "checkbox") {
         // count amount of correct answers
-        const counterCorrectAnswers : number = answerOptions.filter(item => item.isCorrect === item.userValue).length;
+        const counterCorrectAnswers : number = props.answerOptions.filter(item => item.isCorrect === item.userValue).length;
         if(counterCorrectAnswers === 0) {
           solutionText = ("The answer is incorrect!");
-        }else if(counterCorrectAnswers < answerOptions.length) {
-          solutionText = ("The answer is partially correct! (" + counterCorrectAnswers + "/" + answerOptions.length + ")");
+        }else if(counterCorrectAnswers < props.answerOptions.length) {
+          solutionText = ("The answer is partially correct! (" + counterCorrectAnswers + "/" + props.answerOptions.length + ")");
         }else {
            solutionText = ("The answer is correct!");
         }
@@ -36,7 +39,7 @@ export function QuestionCheckbox(props : QuestionCheckboxProps) {
                 <div>
                 <h2>{props.question.title}</h2>
                     <div className="question-checkbox-container">
-                        {answerOptions.map(function (item: AnswerOption, index: number) {
+                        {props.answerOptions.map(function (item: AnswerOption, index: number) {
                             return <FormControlLabel 
                                 label={item.text}
                                 key={"fcl" + item.text + ""}
@@ -70,7 +73,8 @@ export function QuestionCheckbox(props : QuestionCheckboxProps) {
         }else {
             // result-mode
             return (
-                <div>
+                <ResultCard>
+                    <CardContent>
                     <div className="row-container">
                         <ResponseStatusIcon tag="textfield" correctUserResponse={props.question.correctUserResponse === true}/>
                         <h2>{props.question.title}</h2>
@@ -80,12 +84,13 @@ export function QuestionCheckbox(props : QuestionCheckboxProps) {
                         <ul>
                             {props.question.correctAnswers.map(answer => {
                                 return (
-                                    <li>{answer}</li>
+                                    <li key={"li-" + answer}>{answer}</li>
                                 );
                             })}
                         </ul>
                     </div>
-                </div>
+                </CardContent>
+                </ResultCard>
             )
         }
     }else {
@@ -98,11 +103,11 @@ export function QuestionCheckbox(props : QuestionCheckboxProps) {
         if(props.state === "question-mode"&& props.question.type==="checkbox") {
             // if answers are accepted, change value
             
-            let nextArray = answerOptions.slice(0, index)
-            let nextObj : AnswerOption = {...answerOptions[index], userValue: event.target.checked};
+            let nextArray = props.answerOptions.slice(0, index)
+            let nextObj : AnswerOption = {...props.answerOptions[index], userValue: event.target.checked};
             nextArray.push(nextObj)
-            nextArray = nextArray.concat(answerOptions.slice(index + 1, answerOptions.length))
-            setAnswerOptions(nextArray);
+            nextArray = nextArray.concat(props.answerOptions.slice(index + 1, props.answerOptions.length))
+            props.setAnswerOptions(nextArray);
             const isCorrectAnswer = nextArray.filter(item => item.isCorrect === item.userValue).length === nextArray.length;
             props.setUserResponse(isCorrectAnswer);
         }

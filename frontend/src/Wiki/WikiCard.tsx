@@ -11,7 +11,7 @@ import { ColoredIcon } from '../Dashboard/ColoredIcon';
 
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import React, { useMemo } from 'react';
+import React, { useRef } from 'react';
 import { CommentItem } from './CommentItem';
 import SendIcon from '@mui/icons-material/Send';
 import { useRecoilValue } from 'recoil';
@@ -93,18 +93,27 @@ const styleWarning = {backgroundColor:"#f2291bcf", marginBottom: "10px", marginT
 
 
 export function WikiCard (props: WikiCardProps) {
-    const [userData, setUserData] = React.useState<WikiCardUserData>({hasBookmark: true, hasUpvoted: false});
+    const [userData, setUserData] = React.useState<WikiCardUserData>({hasBookmark: false, hasUpvoted: false});
     const [expanded, setExpanded] = React.useState(false);
     const [textInput, setTextInput] = React.useState("");
     const user = useRecoilValue(userAtom);
+    const inputRef = useRef<any>(null);
 
     const handleExpandClick = () => {
       setExpanded(!expanded);
     };
 
-   
+    
 
-
+    function handleReplyClick() {
+        setExpanded(true);
+        //if(inputRef != null && inputRef.current != null) {
+        setTimeout(() =>{
+            inputRef.current.focus();
+        }, 100)
+        
+        //}
+    }
 
     
 
@@ -149,7 +158,7 @@ export function WikiCard (props: WikiCardProps) {
                         }
                     </CardContent>
                     <BottomBar key={"bottom-bar-" + props.content.author + "-" + props.content.date} />
-                    <Collapse in={expanded} timeout="auto" unmountOnExit>
+                    <Collapse in={expanded} timeout="auto">
                     <CardContent>
                     {props.content.comments.map(comment => {
                         return (
@@ -160,7 +169,7 @@ export function WikiCard (props: WikiCardProps) {
                     <CardContent>
                         <BottomContainer>
                             <FormControl fullWidth>
-                                <TextField value={textInput} onKeyDown={onKeyPressed} onChange={onTextFieldChange} variant="standard" label="Enter Comment here">
+                                <TextField inputRef={ref => inputRef.current = ref} value={textInput} onKeyDown={onKeyPressed} onChange={onTextFieldChange} variant="standard" label="Enter Comment here">
 
                                 </TextField>
                             </FormControl>
@@ -219,7 +228,7 @@ export function WikiCard (props: WikiCardProps) {
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Reply">
-                        <IconButton aria-label="add to favorites">
+                        <IconButton onClick={handleReplyClick} aria-label="add to favorites">
                             <CommentIcon />
                         </IconButton>
                     </Tooltip>

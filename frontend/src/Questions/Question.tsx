@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import "./../App.css"
 import { QuestionCheckbox } from "./QuestionCheckbox";
 import { QuestionTextfield } from "./QuestionTextfield";
-import { AnswerOption, exampleQuestions, QuestionData, QuestionState, applyUserResponse } from "./QuestionType";
+import { AnswerOption, exampleQuestions, QuestionData, QuestionState, applyUserResponse, generateAnswerOptions } from "./QuestionType";
 
 type Props = {
 
@@ -13,15 +13,15 @@ type Props = {
 export function Question (prop: Props) {
     let { id, stepId } = useParams();
     let [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
-
-
+    
+    let [textInput, setTextInput] = useState<string>("");
     
 
     let [questionData, setQuestionData] = useState<QuestionData[]>(exampleQuestions);
     let [questionState, setQuestionState] = useState<QuestionState>("question-mode");
     let currentQuestion = questionData[currentQuestionIndex];
 
-
+    let [answerOptions, setAnswerOptions] = useState<AnswerOption[]>(generateAnswerOptions(questionData[currentQuestionIndex]));
 
     const navigate = useNavigate()
     const openStepOverview = useCallback(
@@ -40,8 +40,8 @@ export function Question (prop: Props) {
                     <span id="question-position-text">{"Question " + (currentQuestionIndex+1) + "/" + questionData.length}</span>
                 </div>
                 <h2>{currentQuestion.title}</h2>
-                {<QuestionTextfield questionData={currentQuestion} state={questionState} setUserResponse={(correctAnswer)=>setUserResponse(currentQuestionIndex, correctAnswer)}/>}
-                {<QuestionCheckbox  key={"question-checkbox-"+currentQuestionIndex}  question={currentQuestion} state={questionState} setUserResponse={(correctAnswer)=>setUserResponse(currentQuestionIndex, correctAnswer)}/>}
+                {<QuestionTextfield textInput={textInput} setTextInput={setTextInput} questionData={currentQuestion} state={questionState} setUserResponse={(correctAnswer)=>setUserResponse(currentQuestionIndex, correctAnswer)}/>}
+                {<QuestionCheckbox  answerOptions={answerOptions} setAnswerOptions={setAnswerOptions} key={"question-checkbox-"+currentQuestionIndex}  question={currentQuestion} state={questionState} setUserResponse={(correctAnswer)=>setUserResponse(currentQuestionIndex, correctAnswer)}/>}
                 
                 <div className="button-bottom-container">
                     <div className="button-bottom-container-inner">
