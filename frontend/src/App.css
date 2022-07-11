@@ -49,7 +49,10 @@ body{
   }
 }
 
-
+ul {
+  margin-block-start: 0em;
+  margin-block-end: 0em;
+}
 
 #question-section-text {
   text-align: left;

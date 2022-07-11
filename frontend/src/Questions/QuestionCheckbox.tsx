@@ -4,6 +4,7 @@ import { AnswerOption, generateAnswerOptions, QuestionData, QuestionState } from
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { ResponseStatusIcon } from "./ResponseStatusIcon";
 import { ResultCard } from "./Questions.styled";
+import { BlueCard } from "../Dashboard/BlueCard";
 
 type QuestionCheckboxProps = {
     question: QuestionData,
@@ -73,7 +74,7 @@ export function QuestionCheckbox(props : QuestionCheckboxProps) {
         }else {
             // result-mode
             return (
-                <ResultCard>
+                <BlueCard>
                     <CardContent>
                     <div className="row-container">
                         <ResponseStatusIcon tag="textfield" correctUserResponse={props.question.correctUserResponse === true}/>
@@ -90,7 +91,7 @@ export function QuestionCheckbox(props : QuestionCheckboxProps) {
                         </ul>
                     </div>
                 </CardContent>
-                </ResultCard>
+                </BlueCard>
             )
         }
     }else {

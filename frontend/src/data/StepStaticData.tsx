@@ -23,7 +23,7 @@ const exampleStepData1 : StepData = {
     subtaskId: 19871512,
     stepId: 1,
     title: "Engine Bottom Cover",
-    context: "Page 3, Step 1",
+    context: "Page 3",
     toolsData: toolsData,
     partsData: partsData,
     descriptionData: descriptionData,
@@ -40,7 +40,7 @@ const exampleStepData2 : StepData = {
     subtaskId: 19871512,
     stepId: 2,
     title: "Engine Top Cover",
-    context: "Page 4",
+    context: "Page 4-5",
     toolsData: toolsData,
     partsData: partsData2,
     descriptionData: descriptionData2,
@@ -49,8 +49,8 @@ const exampleStepData2 : StepData = {
     wikiEntries: [],
     status: "completed",
     duration: 25,
-    correctResponses: 2,
-    totalResponses: 3
+    correctResponses: 0,
+    totalResponses: 0
 }
 
 const exampleStepData3: StepData = {
@@ -61,10 +61,10 @@ const exampleStepData3: StepData = {
     toolsData: toolsData3,
     partsData: partsData3,
     descriptionData: descriptionData3,
-    relevantPages: [6,7,8,9],
+    relevantPages: [12,13],
     questionData: [],
     wikiEntries: [],
-    status: "pending",
+    status: "work-in-progress",
     duration: 0,
     correctResponses: 0,
     totalResponses: 0
@@ -78,7 +78,7 @@ const exampleStepData4: StepData = {
     toolsData: toolsData4,
     partsData: partsData4,
     descriptionData: descriptionData4,
-    relevantPages: [9,10,11,12],
+    relevantPages: [14,15,16],
     questionData: exampleQuestions4,
     wikiEntries: [],
     status: "pending",

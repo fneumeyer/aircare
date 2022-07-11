@@ -1,4 +1,4 @@
-import { Button, Checkbox, FilledInput, FormControl, FormControlLabel, InputAdornment, TextField } from "@mui/material";
+import { Button, Checkbox, FilledInput, FormControl, FormControlLabel, InputAdornment, Card, TextField } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { exampleQuestions } from "../data/QuestionData";
@@ -11,6 +11,8 @@ type Props = {
 
 };
 
+// old component, functions might not work as intended
+// new component: QuestionTab
 export function Question (prop: Props) {
     let { id, stepId } = useParams();
     let [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
@@ -33,7 +35,6 @@ export function Question (prop: Props) {
     );
 
     return (
-        // TODO: Replace placeholder data
         <div className="root-container">
                 <h1>Mastercard #3: Engine Covers</h1>
                 <div className="question-header-container">

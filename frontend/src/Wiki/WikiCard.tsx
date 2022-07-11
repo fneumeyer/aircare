@@ -11,7 +11,7 @@ import { ColoredIcon } from '../Dashboard/ColoredIcon';
 
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import React, { useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { CommentItem } from './CommentItem';
 import SendIcon from '@mui/icons-material/Send';
 import { useRecoilValue } from 'recoil';
@@ -91,30 +91,43 @@ const MastercardLinkContainer = styled('div')`
 const styleTips = {backgroundColor:"#2279ec5E", marginBottom: "10px", marginTop: "10px"};
 const styleWarning = {backgroundColor:"#f2291bcf", marginBottom: "10px", marginTop: "10px"};
 
+function wikiCardsEqual(oldProps: WikiCardProps, newProps: WikiCardProps){
+    return oldProps.content.author === newProps.content.author && oldProps.content.date === newProps.content.date
+}
 
-export function WikiCard (props: WikiCardProps) {
+export const WikiCard = React.memo((props: WikiCardProps) => {
     const [userData, setUserData] = React.useState<WikiCardUserData>({hasBookmark: false, hasUpvoted: false});
-    const [expanded, setExpanded] = React.useState(false);
+    const [expanded, setExpanded] = React.useState(true); // TODO avoid rerender that resets state to initial values
     const [textInput, setTextInput] = React.useState("");
     const user = useRecoilValue(userAtom);
     const inputRef = useRef<any>(null);
 
     const handleExpandClick = () => {
-      setExpanded(!expanded);
+        console.log("Expanded click")
+        setExpanded(!expanded);
     };
 
     
-
+    
     function handleReplyClick() {
+        console.log("reply click")
         setExpanded(true);
-        //if(inputRef != null && inputRef.current != null) {
+        if(inputRef != null && inputRef.current != null) {
         setTimeout(() =>{
             inputRef.current.focus();
         }, 100)
         
-        //}
+        }
     }
 
+    const onKeyPressed = useCallback(
+        (event: React.KeyboardEvent<HTMLDivElement>) => {
+            if(event.key === 'Enter') {
+                // add new comment
+                sendComment();
+            }
+        }, [sendComment]
+    );
     
 
     //if(props.content.cardType === "tip" || props.content.cardType === "warning") {
@@ -127,7 +140,7 @@ export function WikiCard (props: WikiCardProps) {
                             <WikiCardIcon/>
                         }
                         action={
-                        <Tooltip title="Bookmark">
+                        <Tooltip title="Bookmark" enterTouchDelay={0}>
                             <IconButton onClick={onBookmarkClick} aria-label="bookmark">
                                 {userData.hasBookmark?<BookmarkIcon /> : <BookmarkBorderIcon/>}
                             </IconButton>
@@ -145,8 +158,8 @@ export function WikiCard (props: WikiCardProps) {
                             <MastercardLinkContainer>
                                 {props.content.mastercardLink.map(item => {
                                     return (
-                                        <ButtonPaddingContainer>
-                                            <Tooltip title="Open Mastercard">
+                                        <ButtonPaddingContainer key={"button-padding-container-" + item.title}>
+                                            <Tooltip title="Open Mastercard" enterTouchDelay={0}>
                                             <Button variant="outlined" onClick={() =>props.openLink(item.page)}>{item.title}</Button>
                                             </Tooltip>
                                         </ButtonPaddingContainer>
@@ -162,7 +175,7 @@ export function WikiCard (props: WikiCardProps) {
                     <CardContent>
                     {props.content.comments.map(comment => {
                         return (
-                            <CommentItem key={props.content.author + props.content.title + "comment-" + comment.author + "-" + comment.date} {...comment}/>
+                            <CommentItem key={props.content.author + props.content.title + "comment-" + comment.author + "-" + comment.date + "-" + comment.message} {...comment}/>
                         )
                     })}
                     </CardContent>
@@ -173,7 +186,7 @@ export function WikiCard (props: WikiCardProps) {
 
                                 </TextField>
                             </FormControl>
-                            <Tooltip title="Send Comment">
+                            <Tooltip title="Send Comment" enterTouchDelay={0}>
                                 <IconButton onClick={sendComment}>
                                     <SendIcon></SendIcon>
                                 </IconButton>
@@ -185,36 +198,6 @@ export function WikiCard (props: WikiCardProps) {
                 </Card>
             </div>
         );
-        //<BottomContent key={"bottom-content-" + props.content.author + "-" + props.content.date}/>
-    /*}else {
-        return (
-            <Card style={styleTips}>
-                <CardHeader
-                    titleTypographyProps={{fontSize: "24px", fontWeight: "bold"}}
-                    avatar={
-                        <WikiCardIcon/>
-                    }
-                    action={
-                    <Tooltip title="Bookmark">
-                        <IconButton onClick={onBookmarkClick} aria-label="bookmark">
-                            {userData.hasBookmark?<BookmarkIcon /> : <BookmarkBorderIcon/>}
-                        </IconButton>
-                    </Tooltip>
-                    }
-                    title={props.content.title}
-                    subheader={props.content.author + " on " + props.content.date}
-                />
-                <CardContent>
-                
-                    <Typography paragraph>
-                        {props.content.text}
-                    </Typography>
-                </CardContent>
-                <BottomBar key={"bottom-bar-" + props.content.author + props.content.date} />
-                <BottomContent key={"bottom-content-" + props.content.author + props.content.date}/>
-            </Card>
-        );
-    }*/
 
     function BottomBar() {
         return (
@@ -222,17 +205,17 @@ export function WikiCard (props: WikiCardProps) {
                 <BottomContainer>
                 <Typography variant="body1">{(props.content.comments.length === 1)? "1 Comment": props.content.comments.length + " Comments"} </Typography>
                 <ActionButtonContainer>
-                    <Tooltip title="Like">
+                    <Tooltip title="Like" enterTouchDelay={0}>
                         <IconButton aria-label="like">
                             <ThumbUpIcon></ThumbUpIcon>
                         </IconButton>
                     </Tooltip>
-                    <Tooltip title="Reply">
+                    <Tooltip title="Reply" enterTouchDelay={0}>
                         <IconButton onClick={handleReplyClick} aria-label="add to favorites">
                             <CommentIcon />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip title="Report Post">
+                    <Tooltip title="Report Post" enterTouchDelay={0}>
                         <IconButton aria-label="report">
                         <WarningIcon />
                         </IconButton>
@@ -269,12 +252,14 @@ export function WikiCard (props: WikiCardProps) {
         }
     }
 
+    
+    /*
     function onKeyPressed(event: React.KeyboardEvent<HTMLDivElement>) {
         if(event.key === 'Enter') {
             // add new comment
             sendComment();
         }
-    }
+    }*/
 
     function sendComment() {
         if(textInput.length > 0) {
@@ -283,6 +268,10 @@ export function WikiCard (props: WikiCardProps) {
             props.addComment({author: user?.firstName + " " + user?.lastName, date: dateString, message: textInput, points: 0},)
             setTextInput("");
         }
+        setTimeout(() => {
+            console.log(expanded);
+        },300);
+        
     }
 
     function onTextFieldChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
@@ -293,6 +282,6 @@ export function WikiCard (props: WikiCardProps) {
     function onBookmarkClick() {
         setUserData({...userData, hasBookmark: !userData.hasBookmark});
     }
-}
+}, wikiCardsEqual)
 
 export type {WikiCardProps, CommentData, WikiCardContent};

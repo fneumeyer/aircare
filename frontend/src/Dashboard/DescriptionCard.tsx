@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, IconButton, Tooltip,  } from "@mui/mater
 import { ColoredIcon } from "./ColoredIcon";
 import SettingsIcon from '@mui/icons-material/Settings';
 import DescriptionIcon from '@mui/icons-material/Description';
+import { BlueCard } from "./BlueCard";
 
 
 type DescriptionCardProps = {
@@ -9,14 +10,14 @@ type DescriptionCardProps = {
 }
 export function DescriptionCard(props: DescriptionCardProps) {
     return (
-        <Card style={{backgroundColor:"#2279ec5E", marginBottom: "10px", marginTop: "10px"}}>
+        <BlueCard>
             <CardHeader
                 titleTypographyProps={{fontSize: "24px", fontWeight: "bold"}}
                 avatar={
                     <ColoredIcon child={<DescriptionIcon/>} ariaLabel="description"></ColoredIcon>
                 }
                 action={
-                <Tooltip title="Edit">
+                <Tooltip title="Edit" enterTouchDelay={0}>
                     <IconButton aria-label="settings">
                         <SettingsIcon />
                     </IconButton>
@@ -24,7 +25,7 @@ export function DescriptionCard(props: DescriptionCardProps) {
                 }
                 title="Description"
             />
-            <CardContent>
+            <CardContent sx={{paddingTop: 0}}>
                 <ul>
                     {props.description.map(item => {
                         return (
@@ -33,6 +34,6 @@ export function DescriptionCard(props: DescriptionCardProps) {
                     })}
                 </ul>
             </CardContent>
-        </Card>
+        </BlueCard>
     );
 }

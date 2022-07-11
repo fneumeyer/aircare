@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, Card, CardContent, CardHeader } from "@mui/material";
 import { useState } from "react";
 import { QuestionCheckbox } from "./QuestionCheckbox";
 import { QuestionTextfield,  } from "./QuestionTextfield";
@@ -30,21 +30,25 @@ export function QuestionTab(props: QuestionTabProps) {
         if(props.questionIndex < props.questionData.length) {
         let currentQuestion = props.questionData[props.questionIndex];
         return (
-            <div className="root-container">
-                    <div className="question-header-container">
-                        <span id="question-section-text">{currentQuestion.context}</span>
-                        <span id="question-position-text">{"Question " + (props.questionIndex+1) + "/" + props.questionData.length}</span>
-                    </div>
-                    
-                    {<QuestionTextfield textInput={props.textInput} setTextInput={props.setTextInput} key={"question-textfield-"+props.questionIndex} questionData={currentQuestion} state={props.questionState} setUserResponse={(correctAnswer)=>setUserResponse(props.questionIndex, correctAnswer)}/>}
-                    {<QuestionCheckbox {...props} key={"question-checkbox-"+props.questionIndex} question={currentQuestion} state={props.questionState} setUserResponse={(correctAnswer)=>setUserResponse(props.questionIndex, correctAnswer)}/>}
-                    
-                    <div className="button-bottom-container">
-                        <div className="button-bottom-container-inner">
-                        {renderButtons()}
+            <Card>
+                <CardContent>
+                    <div className="root-container">
+                        <div className="question-header-container">
+                            <span id="question-section-text">{currentQuestion.context}</span>
+                            <span id="question-position-text">{"Question " + (props.questionIndex+1) + "/" + props.questionData.length}</span>
+                        </div>
+                        
+                        {<QuestionTextfield textInput={props.textInput} setTextInput={props.setTextInput} key={"question-textfield-"+props.questionIndex} questionData={currentQuestion} state={props.questionState} setUserResponse={(correctAnswer)=>setUserResponse(props.questionIndex, correctAnswer)}/>}
+                        {<QuestionCheckbox {...props} key={"question-checkbox-"+props.questionIndex} question={currentQuestion} state={props.questionState} setUserResponse={(correctAnswer)=>setUserResponse(props.questionIndex, correctAnswer)}/>}
+                        
+                        <div className="button-bottom-container">
+                            <div className="button-bottom-container-inner">
+                            {renderButtons()}
+                            </div>
                         </div>
                     </div>
-            </div>
+                </CardContent>
+            </Card>
         );
         }else {
             return(
@@ -86,6 +90,7 @@ export function QuestionTab(props: QuestionTabProps) {
     // event to submit an answer
     function onSubmitClick() {
         props.onQuestionStateChange("answer-mode");
+        
         
     }
     function onNextClick() {

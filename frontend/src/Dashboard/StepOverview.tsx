@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
-import {Box, Breadcrumbs, Button, FormControl, Grid, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, styled, Tab, Tabs, Typography } from "@mui/material";
+import {Badge, Box, Breadcrumbs, Button, Chip, FormControl, Grid, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, styled, Tab, Tabs, Typography } from "@mui/material";
 import { TabPanel } from "./TabPanel";
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -16,7 +16,7 @@ import { AnswerOption, generateAnswerOptions, QuestionData, QuestionState } from
 import { QuestionTab } from "../Questions/QuestionTab";
 import { WikiTab } from "../Wiki/WikiTab";
 import { WikiCardContent } from "../Wiki/WikiCard";
-import { exampleStepData1, subtaskEngineCover } from "../data/StepStaticData";
+import { subtaskEngineCover } from "../data/StepStaticData";
 import { SubtaskData } from "./SubtaskOverview";
 
 
@@ -54,7 +54,7 @@ export type PDFBox = PDFAnnotation & {
     location2: PDFLocation;
 }
 
-const samplePageNumber = 4;
+const samplePageNumber = 12;
 
 const sampleComment: PDFComment = {
     type: "comment",
@@ -63,7 +63,7 @@ const sampleComment: PDFComment = {
     location: {
         page: samplePageNumber,
         position: {
-            x: 30,
+            x: 27,
             y: 30,
         }
     },
@@ -101,7 +101,7 @@ const StyledLink = styled(Link)(({theme}) => ({
 
 type StepStatus = "pending" | "work-in-progress" | "completed"
 
-export type StepData = {
+type StepData = {
     subtaskId: number,
     stepId: number,
     title: string,
@@ -117,8 +117,6 @@ export type StepData = {
     correctResponses: number,
     totalResponses: number,
 }
-
-
 
 export function StepOverview(props: Props){
     let { id, stepId } = useParams();
@@ -163,6 +161,11 @@ export function StepOverview(props: Props){
     //    },
     //    [id, navigate, stepId]
     //);
+
+    const setWikiContent = useCallback((
+        content: WikiCardContent[]) => {
+        setStepData({...stepData, wikiEntries: content})
+    }, [setStepData, stepData, ]);
 
     const openSubtaskOverview = useCallback(
         () => {
@@ -217,18 +220,16 @@ export function StepOverview(props: Props){
     function initStepData(stepId: number) : StepData {
         // TODO Add Backend communication here
         const currentSubtask = subtaskData;
-        
-        if(stepId >= 1 && stepId <= currentSubtask.steps.length ) {
-            if(currentSubtask.steps[stepId - 1].status === "pending") {
-                currentSubtask.steps[stepId - 1].status = "work-in-progress";
-            }
-            return currentSubtask.steps[stepId - 1];
-        }else{
-            if(currentSubtask.steps[0].status === "pending") {
-                currentSubtask.steps[0].status = "work-in-progress";
-            }
-            return currentSubtask.steps[0];
+        const index = (stepId >= 1 && stepId <= currentSubtask.steps.length)?stepId - 1 : 0;
+        // change status, if certain conditions apply
+        if(currentSubtask.steps[index].status === "pending") {
+            currentSubtask.steps[index].status = "work-in-progress";
         }
+        if(currentSubtask.steps[index].status === "work-in-progress" && currentSubtask.steps[index].questionData.length === currentSubtask.steps[index].totalResponses) {
+            currentSubtask.steps[index].status = "completed";
+        }
+        return currentSubtask.steps[index];
+        
     }
 
     const openMastercardLink = useCallback(
@@ -243,6 +244,8 @@ export function StepOverview(props: Props){
         setTabIndex(1);
     }
 
+
+    const remainingOpenQuestions = (questionState === "result-mode")? 0 : ((questionState === "question-mode")?(questionData.length - currentQuestionIndex) : (questionData.length - currentQuestionIndex - 1));
     return (
         <Grid container sx={{height: '100%'}} spacing={2} direction="column">
 
@@ -263,12 +266,12 @@ export function StepOverview(props: Props){
             </div>
             </Grid>
             <Grid item xs="auto"> 
-            <h1>{`${subtaskData.title} (${stepId}/${subtaskData.steps.length}) - ${stepData.status}`}</h1>
+            <h1>{`${subtaskData.title} (${stepId}/${subtaskData.steps.length})${(stepData.status==="completed")?" - Completed":""}`}</h1>
             <h2>{stepData.context + ": " + stepData.title}</h2>
                 <Paper>
                 <Tabs value={tabIndex} onChange={handleTabChange} centered>
                     <Tab label="Overview" />
-                    <Tab label="Questions"/>
+                    <Tab label={<span style={{display: 'inline-flex', alignItems: 'center'}}>Questions {(remainingOpenQuestions > 0)?<Chip style={{marginLeft: '5px'}} size="small" label={remainingOpenQuestions} color="primary" /> : null} </span>} />
                     <Tab label="Mastercard"/>
                     <Tab label="WIKI" />
                 </Tabs>
@@ -302,14 +305,15 @@ export function StepOverview(props: Props){
                 
                 <Grid container spacing={1}>
                     <Grid item xs={4}>
-                        <Button fullWidth sx={{margin: 0}} color="actionbutton2" variant="contained" onClick={openPrevious}>PREVIOUS STEP</Button>
+                        <Button fullWidth sx={{margin: 0}} color="actionbuttonblue" variant="contained" onClick={openPrevious}>PREVIOUS STEP</Button>
                     </Grid>
                     <Grid item xs={4}>
-                        <Button fullWidth sx={{margin: 0}} color="actionbuttonblue"  variant="contained" onClick={openQuestions} >VIEW QUESTIONS</Button>
+                        <Button disabled={questionData.length === 0} fullWidth sx={{margin: 0}} color="actionbuttonblue"  variant="contained" onClick={openQuestions} >VIEW QUESTIONS</Button>
                     </Grid>
                     <Grid item xs={4}>
-                        <Button disabled={questionState !== "result-mode"} fullWidth sx={{margin: 0}} color="actionbuttonblue" variant="contained" onClick={onFinishStepClick}>FINISH STEP</Button>
+                        <Button disabled={questionState !== "result-mode"} fullWidth sx={{margin: 0}} color="actionbuttonblue" variant="contained" onClick={onFinishStepClick}>{(stepData.status !== "completed")?"FINISH STEP":"Continue"}</Button>
                     </Grid>
+                    <Box height={"110px"}></Box>
                 </Grid>
             </div>
         );
@@ -324,6 +328,14 @@ export function StepOverview(props: Props){
 
     function onSubmitAnswer(index: number, isCorrect: boolean) {
         // TODO Backend communication
+        if(stepData.status === "work-in-progress") {
+            const totalResp = stepData.totalResponses + 1;
+            const correctResp = stepData.correctResponses + (isCorrect? 1: 0);
+            
+            const nextStepData : StepData = {...stepData, totalResponses: totalResp, correctResponses: correctResp, status: (totalResp === stepData.questionData.length)?"completed" : "work-in-progress"}
+            setStepData(nextStepData);
+        }
+        console.log(index, isCorrect)
     }
 
     function openPrevious() {
@@ -345,6 +357,7 @@ export function StepOverview(props: Props){
         const numStep = Number(stepId);
         if(numStep < subtaskData.steps.length) {
             // go one step forward
+            setStepData({...stepData, status: "completed"}); // mark step as completed
             openStep(numStep + 1);
         }else {
             // go to overview
@@ -465,14 +478,12 @@ export function StepOverview(props: Props){
     function WikiTabPanel() {
         return (
             <div>
-                <WikiTab setWikiContent={setWikiContent} {...stepData} openLink={openMastercardLink}></WikiTab>
+                <WikiTab key={"wiki-tab-" + stepData.title} setWikiContent={setWikiContent} {...stepData} openLink={openMastercardLink}></WikiTab>
             </div>
         );
     }
 
-    function setWikiContent(content: WikiCardContent[]) {
-        setStepData({...stepData, wikiEntries: content})
-    }
+    
 
 
     function handleTabChange(event: React.SyntheticEvent, newValue: number) {
@@ -480,3 +491,6 @@ export function StepOverview(props: Props){
     }
 
 }
+
+
+export type {StepData};

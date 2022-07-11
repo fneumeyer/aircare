@@ -21,6 +21,8 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { AddWorkerDialog } from "./AddWorkerDialog";
 import { StepData } from "./StepOverview";
+import {theme} from '../theme'
+import { subtaskEngineCover } from "../data/StepStaticData";
 
 type Props = {
 
@@ -96,6 +98,13 @@ export function SubtaskOverview(props: Props){
         [id, navigate]
     );
 
+    const openStepDetailsById = useCallback(
+        (stepId: number) => {
+        navigate(`/task/${id}/step/${stepId}`)
+        },
+        [id, navigate]
+    );
+
     return <>
         <Grid container sx={{height: '100%'}} spacing={2} direction="column">
             <Grid item xs="auto"> 
@@ -164,15 +173,14 @@ export function SubtaskOverview(props: Props){
             
 
             <div className="button-bottom-container">
-                <Button id="submit-answer-button" color="actionbutton" variant="contained" onClick={openStepDetails}>START TASK</Button>
+                <Button id="submit-answer-button" color="actionbuttonblue" variant="contained" onClick={openStepDetails}>START TASK</Button>
             </div>
         </div>
         );
     }
     // TODO Dialog: Search for real users
-
-
     function renderTable() {
+
         return (
             <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -187,39 +195,76 @@ export function SubtaskOverview(props: Props){
                 </TableRow>
                 </TableHead>
                 <TableBody>
-                {rowData.map((rowData) => (
+                {subtaskEngineCover.steps.map((rowData, index) => {
+                    
+                    const chipColor = () => {
+                            switch(rowData.status){
+                                case "completed":
+                                    return "success"
+                                case "work-in-progress":
+                                    return "primary"
+                                case "pending":
+                                    return "warning"
+                                default: 
+                                    return "primary"
+                            }
+                        }
+                    const statusText = () => {
+                        switch(rowData.status){
+                            case "completed":
+                                return "Completed"
+                            case "work-in-progress":
+                                return "Work in Progress"
+                            case "pending":
+                                return "Pending"
+                            default: 
+                                return "Unknown Status"
+                        }
+                    }
+
+                    const rowBackgroundColor = rowData.status === "pending" ? theme.palette.grey[300] : theme.palette.background.paper;
+                    const rowFontColor = rowData.status === "pending" ? theme.palette.grey[500] : theme.palette.text.primary;
+
+                    return (
                     <TableRow
-                    key={rowData.name}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                    key={rowData.title}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 }, backgroundColor: rowBackgroundColor }}
                     >
-                    <TableCell align="left">{rowData.id}</TableCell>
-                    <TableCell component="th" scope="row">
-                        {rowData.name}
+                    <TableCell sx={{color: rowFontColor}} align="left">{rowData.stepId}</TableCell>
+                    <TableCell sx={{color: rowFontColor}} component="th" scope="row">
+                        {rowData.title}
                     </TableCell>
                     
-                    <TableCell align="right">{rowData.questionResult}</TableCell>
-                    <TableCell align="right">{rowData.status}</TableCell>
-                    <TableCell align="right">{(rowData.duration > 0)?rowData.duration + " min" : "N/A"}</TableCell>
+                    <TableCell sx={{color: rowFontColor}} align="right">{`${rowData.correctResponses}/${rowData.totalResponses}`}</TableCell>
+                    <TableCell align="right"><Chip color={chipColor()} label={statusText()} /></TableCell>
+                    <TableCell sx={{color: rowFontColor}} align="right">{(rowData.duration > 0)?rowData.duration + " min" : "N/A"}</TableCell>
                     <TableCell align="center" children={
                         <div>
-                            <Tooltip title="Configure">
+                            <Tooltip title="Configure" enterTouchDelay={0}>
                                 <IconButton>
                                     <SettingsIcon/>
                                 </IconButton>
                             </Tooltip>
-                            <Tooltip title="View Subtask">
-                                <IconButton>
+                            <Tooltip title="View Subtask" enterTouchDelay={0}>
+                                <IconButton onClick={() => onViewSubtaskClick(index)}>
                                     <VisibilityIcon/>
                                 </IconButton>
                             </Tooltip>
                         </div>
                         }></TableCell>
                     </TableRow>
-                ))}
+                )})}
                 </TableBody>
             </Table>
         </TableContainer>
         );
+    }
+
+    function onViewSubtaskClick(index: number) {
+        if(subtaskEngineCover.steps[index].status !== "pending") {
+            console.log(index, subtaskEngineCover.steps[index].status)
+            openStepDetailsById(index+1);
+        }
     }
 
     

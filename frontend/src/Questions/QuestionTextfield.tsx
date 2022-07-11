@@ -1,5 +1,6 @@
-import { Card, CardContent, FilledInput, FormControl, IconButton, InputAdornment, Tooltip } from "@mui/material";
+import { Card, CardContent, FilledInput, FormControl, InputAdornment, } from "@mui/material";
 import { useState } from "react";
+import { BlueCard } from "../Dashboard/BlueCard";
 import { ResultCard } from "./Questions.styled";
 import { QuestionData, QuestionState } from "./QuestionType";
 import { ResponseStatusIcon } from "./ResponseStatusIcon";
@@ -62,7 +63,7 @@ export function QuestionTextfield (props: QuestionTextfieldProp) {
             );
         }else {
             return (
-                <ResultCard>
+                <BlueCard>
                     <CardContent>
                         <div className="row-container">
                         <ResponseStatusIcon tag="textfield" correctUserResponse={props.questionData.correctUserResponse === true}/>
@@ -76,7 +77,7 @@ export function QuestionTextfield (props: QuestionTextfieldProp) {
                             </ul>
                         </div>
                     </CardContent>
-                </ResultCard>
+                </BlueCard>
             );
         }
     }else{

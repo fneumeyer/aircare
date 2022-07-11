@@ -15,7 +15,7 @@ export function CommentItem(props: CommentData) {
 
     return (
         <CommentContainer>
-            <Tooltip title={props.date}>
+            <Tooltip title={props.date} enterTouchDelay={0}>
                 <Typography sx={{marginRight: "15px"}} gutterBottom variant="h6">{props.author}</Typography>
             </Tooltip>
             <Typography gutterBottom variant="body2">{props.message}</Typography>

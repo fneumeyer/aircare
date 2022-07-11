@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, IconButton, Tooltip } from "@mui/materia
 import { ColoredIcon } from "./ColoredIcon";
 import BuildIcon from '@mui/icons-material/Build';
 import SettingsIcon from '@mui/icons-material/Settings';
+import { BlueCard } from "./BlueCard";
 
 
 
@@ -14,14 +15,14 @@ export function ToolsCard(props : ToolProps) {
     // #0354bf96
     // 34, 121, 236, 0.37: #2279ec5E
     return (
-        <Card style={{backgroundColor:"#2279ec5E", marginBottom: "10px", marginTop: "10px"}}>
+        <BlueCard>
             <CardHeader
                 titleTypographyProps={{fontSize: "24px", fontWeight: "bold"}}
                 avatar={
                 <ColoredIcon child={<BuildIcon/>} ariaLabel="tool"></ColoredIcon>
                 }
                 action={
-                <Tooltip title="Edit">
+                <Tooltip title="Edit" enterTouchDelay={0}>
                     <IconButton aria-label="settings">
                         <SettingsIcon />
                     </IconButton>
@@ -29,7 +30,7 @@ export function ToolsCard(props : ToolProps) {
                 }
                 title="Tools"
             />
-            <CardContent>
+            <CardContent sx={{paddingTop: 0}}>
                 <ul>
                     {
                         props.tools.map(item => {
@@ -40,6 +41,6 @@ export function ToolsCard(props : ToolProps) {
                     }
                 </ul>
             </CardContent>
-        </Card>
+        </BlueCard>
     );
 }
