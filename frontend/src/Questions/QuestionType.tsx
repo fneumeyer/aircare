@@ -8,10 +8,7 @@ type QuestionData = {type: "textfield", context: string, title: string, correctA
 type AnswerOption = {text: string, isCorrect: boolean, userValue: boolean}; // for checkbox state management
 type QuestionState = "answer-mode" | "question-mode" | "result-mode";
 
-const exampleQuestions : QuestionData[] = [{type: "textfield", context: "Page 3: Section 2", title: "Please specify the used torque for this step: ", correctAnswer: 25, unit: "Nm"},
-        {type: "checkbox", context: "Page 3: Section 2", title: "Which of the following parts are used in the next step?", correctAnswers: ["Engine Cover Part 3", "Engine Cover Part 7"], incorrectAnswers: ["Engine Cover Part 1", "Engine Cover Part 5"], answersToShow: 4,},
-        {type: "checkbox", context: "Page 3: Section 2", title: "Which of the following parts are used in the next step?", correctAnswers: ["Engine Cover Part 2", ], incorrectAnswers: ["Engine Cover Part 4", "Engine Cover Part 6"], answersToShow: 3,},
-    ];
+
 
 function generateAnswerOptions(question: QuestionData) {
     if(question.type === "checkbox") {
@@ -66,4 +63,4 @@ function applyUserResponse(questionData: QuestionData[], index: number, correctR
 }
 
 export type {QuestionType, QuestionData, AnswerOption, QuestionState};
-export  {exampleQuestions, generateAnswerOptions, applyUserResponse};
+export  {generateAnswerOptions, applyUserResponse};

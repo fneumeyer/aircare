@@ -135,7 +135,7 @@ export function StepOverview(props: Props){
     // for questions and user input
 
     let [questionData, setQuestionData] = React.useState<QuestionData[]>(initQuestionData());
-    let [questionState, setQuestionState] = React.useState<QuestionState>(initQuestionState());
+    let [questionState, setQuestionState] = React.useState<QuestionState>(initQuestionState(stepData));
     let [currentQuestionIndex, setCurrentQuestionIndex] = React.useState<number>(0);
     let [answerOptions, setAnswerOptions] = React.useState<AnswerOption[]>([]);
     let [textInput, setTextInput] = React.useState<string>("");
@@ -185,7 +185,7 @@ export function StepOverview(props: Props){
         return stepData.questionData;
     }
 
-    function initQuestionState() : QuestionState {
+    function initQuestionState(stepData: StepData) : QuestionState {
         if(stepData.status === "completed" || stepData.questionData.length === stepData.totalResponses){
             return "result-mode";
         }else {
@@ -202,7 +202,7 @@ export function StepOverview(props: Props){
 
     function resetData(nextStepData: StepData) {
         setQuestionData(nextStepData.questionData);
-        setQuestionState(initQuestionState());
+        setQuestionState(initQuestionState(nextStepData));
         setCurrentQuestionIndex(0);
         setTextInput("");
         

@@ -1,10 +1,11 @@
 import { Button, Checkbox, FilledInput, FormControl, FormControlLabel, InputAdornment, TextField } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { exampleQuestions } from "../data/QuestionData";
 import "./../App.css"
 import { QuestionCheckbox } from "./QuestionCheckbox";
 import { QuestionTextfield } from "./QuestionTextfield";
-import { AnswerOption, exampleQuestions, QuestionData, QuestionState, applyUserResponse, generateAnswerOptions } from "./QuestionType";
+import { AnswerOption, QuestionData, QuestionState, applyUserResponse, generateAnswerOptions } from "./QuestionType";
 
 type Props = {
 

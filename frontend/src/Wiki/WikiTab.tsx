@@ -1,3 +1,4 @@
+import { Box, Button } from "@mui/material";
 import React from "react";
 import { wikiCardChangelog, wikiCardTip, wikiCardWarning } from "../data/WikiData";
 import { CommentData, WikiCard, WikiCardContent, WikiCardProps} from "./WikiCard";
@@ -13,7 +14,10 @@ type WikiTabProps = {
 export function WikiTab(props : WikiTabProps) {
     //const [wikiContent, setWikiContent] = React.useState<WikiCardContent[]>([wikiCardTip, wikiCardWarning, wikiCardChangelog]);
 
-    return (
+    return <>
+        <Box display='flex'>
+            <Button startIcon="Create" variant="contained">Create Entry</Button>
+        </Box>
         <div>
             {props.wikiEntries.map((wikiCard, index) => {
                 return (
@@ -22,7 +26,7 @@ export function WikiTab(props : WikiTabProps) {
             })
         }
         </div>
-    );
+    </>;
 
     function addComment(index: number, comment: CommentData) {
         let wikiContent = props.wikiEntries

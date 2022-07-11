@@ -1,6 +1,6 @@
 import { StepData } from "../Dashboard/StepOverview";
 import { SubtaskData } from "../Dashboard/SubtaskOverview";
-import { exampleQuestions } from "../Questions/QuestionType";
+import { exampleQuestions, exampleQuestions4 } from "./QuestionData";
 import { wikiCardChangelog, wikiCardTip, wikiCardWarning } from "./WikiData";
 
 
@@ -31,7 +31,7 @@ const exampleStepData1 : StepData = {
     questionData: exampleQuestions,
     wikiEntries: [wikiCardTip, wikiCardWarning, wikiCardChangelog],
     status: "completed",
-    duration: 0,
+    duration: 15,
     correctResponses: 1,
     totalResponses: 2
 }
@@ -49,8 +49,8 @@ const exampleStepData2 : StepData = {
     wikiEntries: [],
     status: "completed",
     duration: 25,
-    correctResponses: 0,
-    totalResponses: 0
+    correctResponses: 2,
+    totalResponses: 3
 }
 
 const exampleStepData3: StepData = {
@@ -79,7 +79,7 @@ const exampleStepData4: StepData = {
     partsData: partsData4,
     descriptionData: descriptionData4,
     relevantPages: [9,10,11,12],
-    questionData: exampleQuestions,
+    questionData: exampleQuestions4,
     wikiEntries: [],
     status: "pending",
     duration: 0,
