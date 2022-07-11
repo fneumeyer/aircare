@@ -76,7 +76,7 @@ export function AddWorkerDialog({
       />
       <Box>
         {filteredWorkers.map((worker) => (
-          <Button sx={{margin: '5px'}} variant="outlined" onClick={() => onWorkerSelect(worker)}>{worker.name}</Button>
+          <Button key={"button_" + worker.name} sx={{margin: '5px'}} variant="outlined" onClick={() => onWorkerSelect(worker)}>{worker.name}</Button>
         ))}
       </Box>
     </Container>

@@ -35,6 +35,7 @@ export type SubtaskData = {
     subtaskId: number,
     steps: StepData[],
 }
+type TaskStatus = "all-tasks-completed" | "not-yet-started" | "work-in-progress";
 
 type StepRowType = {
     id: number,
@@ -105,6 +106,20 @@ export function SubtaskOverview(props: Props){
         [id, navigate]
     );
 
+    const stateTaskButton : TaskStatus= useMemo(() => {
+        const nextStep = subtaskEngineCover.steps.findIndex(stepData => {
+            return stepData.status !== "completed";
+        })
+        if(nextStep === -1) {
+            // all tasks have been completed
+            return "all-tasks-completed";
+        }else if(nextStep === 0) {
+            return "not-yet-started";
+        }else {
+            return "work-in-progress";
+        }
+    }, [subtaskEngineCover.steps]) 
+
     return <>
         <Grid container sx={{height: '100%'}} spacing={2} direction="column">
             <Grid item xs="auto"> 
@@ -173,11 +188,39 @@ export function SubtaskOverview(props: Props){
             
 
             <div className="button-bottom-container">
-                <Button id="submit-answer-button" color="actionbuttonblue" variant="contained" onClick={openStepDetails}>START TASK</Button>
+                <BottomButton/>
+                
             </div>
         </div>
         );
     }
+
+
+    function BottomButton() {
+        let text = "Start Task";
+        if(stateTaskButton === "all-tasks-completed") {
+            text = "View Task";
+        }else if(stateTaskButton === "work-in-progress") {
+            text = "Continue Task";
+        }
+        return (
+        <Button id="submit-answer-button" color="actionbuttonblue" variant="contained" onClick={onNextSubtaskClick}>{text}</Button>
+        );
+    }
+    
+
+    function onNextSubtaskClick() {
+        const nextStep = subtaskEngineCover.steps.findIndex(stepData => {
+            return stepData.status !== "completed";
+        })
+        if(nextStep === -1) {
+            // Open first task
+            openStepDetails();
+        }else {
+            openStepDetailsById(nextStep + 1);
+        }
+    }
+
     // TODO Dialog: Search for real users
     function renderTable() {
 
@@ -235,7 +278,7 @@ export function SubtaskOverview(props: Props){
                         {rowData.title}
                     </TableCell>
                     
-                    <TableCell sx={{color: rowFontColor}} align="right">{`${rowData.correctResponses}/${rowData.totalResponses}`}</TableCell>
+                    <TableCell sx={{color: rowFontColor}} align="right">{(rowData.totalResponses > 0)?`${rowData.correctResponses}/${rowData.totalResponses}` : "N/A"}</TableCell>
                     <TableCell align="right"><Chip color={chipColor()} label={statusText()} /></TableCell>
                     <TableCell sx={{color: rowFontColor}} align="right">{(rowData.duration > 0)?rowData.duration + " min" : "N/A"}</TableCell>
                     <TableCell align="center" children={
@@ -300,7 +343,7 @@ export function SubtaskOverview(props: Props){
                     {Array.from(
                         new Array(numPages),
                         (el, index) => (
-                        <Box sx={{paddingBottom: '5px'}} ref={index === scrollToPage ? pageRef : undefined}>
+                        <Box key={`box_${index + 1}`} sx={{paddingBottom: '5px'}} ref={index === scrollToPage ? pageRef : undefined}>
                             <Page
                                 scale={scalesValues[scaleIndex]}
                                 onRenderSuccess={index === scrollToPage ? () => setRenderCounter(renderCounter+1) : undefined}

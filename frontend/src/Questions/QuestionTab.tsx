@@ -11,7 +11,7 @@ type QuestionTabProps = {
     questionState: QuestionState,
     questionIndex: number,
     setQuestionIndex: (value: number) => void,
-    onSubmitCallback: (index: number, isCorrectAnswer: boolean) => void,
+    onSubmitCallback: () => void,
     setQuestionData: (values: QuestionData[]) => void,
     answerOptions: AnswerOption[],
     setAnswerOptions: (array: AnswerOption[]) => void,
@@ -89,6 +89,7 @@ export function QuestionTab(props: QuestionTabProps) {
 
     // event to submit an answer
     function onSubmitClick() {
+        props.onSubmitCallback();
         props.onQuestionStateChange("answer-mode");
         
         
@@ -99,7 +100,7 @@ export function QuestionTab(props: QuestionTabProps) {
             const nextValue = props.questionIndex + 1;
             props.setQuestionIndex(nextValue);
             props.onQuestionStateChange("question-mode")
-            props.setAnswerOptions(generateAnswerOptions(props.questionData[nextValue]))
+            props.setAnswerOptions(generateAnswerOptions(props.questionData[nextValue])); // generate new answer options for checkbox question type
             props.setTextInput("");
         }else {
             // no question is available anymore

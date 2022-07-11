@@ -131,13 +131,13 @@ export function StepOverview(props: Props){
     let [subtaskData, setSubtaskData] = React.useState<SubtaskData>(initSubtaskData());
     let [stepData, setStepData] = React.useState<StepData>(initStepData(Number(stepId)));
     // for questions and user input
-
+    let [currentQuestionIndex, setCurrentQuestionIndex] = React.useState<number>(stepData.totalResponses);
     let [questionData, setQuestionData] = React.useState<QuestionData[]>(initQuestionData());
     let [questionState, setQuestionState] = React.useState<QuestionState>(initQuestionState(stepData));
-    let [currentQuestionIndex, setCurrentQuestionIndex] = React.useState<number>(0);
-    let [answerOptions, setAnswerOptions] = React.useState<AnswerOption[]>([]);
-    let [textInput, setTextInput] = React.useState<string>("");
     
+    let [answerOptions, setAnswerOptions] = React.useState<AnswerOption[]>(initAnswerOptions());
+    let [textInput, setTextInput] = React.useState<string>("");
+    let [startTime, setStartTime]= React.useState<number>(Date.now());
     
 
     const annotationMap = useMemo(() => {
@@ -170,7 +170,7 @@ export function StepOverview(props: Props){
     const openSubtaskOverview = useCallback(
         () => {
             navigate(`/task/${id}`);
-        }, [id, navigate]
+        }, [id, navigate, stepData]
     
     );
 
@@ -180,9 +180,15 @@ export function StepOverview(props: Props){
             const nextStepData = initStepData(stepId)
             setStepData(nextStepData);
             resetData(nextStepData);
-        }, [id, navigate]
+        }, [id, navigate, ]
     
     );
+
+    function saveStepDataInSubtask(data: StepData) {
+        console.log("Save", data);
+        const index = Number(stepId) - 1;
+        subtaskData.steps[index] = data;
+    }
 
     function initQuestionData() {
         return stepData.questionData;
@@ -196,8 +202,8 @@ export function StepOverview(props: Props){
         }
     }
     function initAnswerOptions() {
-        if(stepData.questionData.length > 0) {
-            return generateAnswerOptions(stepData.questionData[0]);
+        if(stepData.questionData.length > 0 && stepData.questionData.length > currentQuestionIndex) {
+            return generateAnswerOptions(stepData.questionData[currentQuestionIndex]);
         }else {
             return [];
         }
@@ -206,9 +212,10 @@ export function StepOverview(props: Props){
     function resetData(nextStepData: StepData) {
         setQuestionData(nextStepData.questionData);
         setQuestionState(initQuestionState(nextStepData));
-        setCurrentQuestionIndex(0);
+        // start with current index
+        setCurrentQuestionIndex(nextStepData.totalResponses);
+        // reset user input
         setTextInput("");
-        
         setAnswerOptions(initAnswerOptions());
     }
 
@@ -219,7 +226,7 @@ export function StepOverview(props: Props){
 
     function initStepData(stepId: number) : StepData {
         // TODO Add Backend communication here
-        const currentSubtask = subtaskData;
+        const currentSubtask = subtaskData; // fetch information from subtask component
         const index = (stepId >= 1 && stepId <= currentSubtask.steps.length)?stepId - 1 : 0;
         // change status, if certain conditions apply
         if(currentSubtask.steps[index].status === "pending") {
@@ -326,25 +333,34 @@ export function StepOverview(props: Props){
         );
     }
 
-    function onSubmitAnswer(index: number, isCorrect: boolean) {
+    function onSubmitAnswer() {
         // TODO Backend communication
-        if(stepData.status === "work-in-progress") {
+        if(stepData.status === "work-in-progress" && currentQuestionIndex < questionData.length) {
+            const isCorrect = questionData[currentQuestionIndex].correctUserResponse;
             const totalResp = stepData.totalResponses + 1;
             const correctResp = stepData.correctResponses + (isCorrect? 1: 0);
             
-            const nextStepData : StepData = {...stepData, totalResponses: totalResp, correctResponses: correctResp, status: (totalResp === stepData.questionData.length)?"completed" : "work-in-progress"}
+            const nextStepData : StepData = {...stepData, questionData: questionData, totalResponses: totalResp, correctResponses: correctResp, status: (totalResp === stepData.questionData.length)?"completed" : "work-in-progress"}
             setStepData(nextStepData);
+            saveStepDataInSubtask(nextStepData);
+            //console.log(nextStepData)
+        }else if(stepData.status === "work-in-progress") {
+            const nextState : StepData = {...stepData, status: "completed"};
+            setStepData(nextState);
+            saveStepDataInSubtask(nextState);
         }
-        console.log(index, isCorrect)
+        //
     }
 
     function openPrevious() {
         const numStep = Number(stepId);
         if(numStep > 1) {
             // go one step back
+            saveStepDataInSubtask({...stepData, questionData: questionData});
             openStep(numStep - 1);
         }else {
             // go to overview
+            saveStepDataInSubtask({...stepData, questionData: questionData});
             openSubtaskOverview();
         }
     }
@@ -355,12 +371,20 @@ export function StepOverview(props: Props){
 
     function onFinishStepClick() {
         const numStep = Number(stepId);
+        const duration =  (Date.now() - startTime) / 60000 ; 
+        const durationMinutes = (stepData.duration === 0)? Math.ceil(duration) : stepData.duration;
         if(numStep < subtaskData.steps.length) {
             // go one step forward
-            setStepData({...stepData, status: "completed"}); // mark step as completed
+           
+            const nextStepData : StepData = {...stepData, status: "completed", duration: durationMinutes};
+            setStepData(nextStepData); // mark step as completed
+            saveStepDataInSubtask(nextStepData);
             openStep(numStep + 1);
         }else {
             // go to overview
+            const nextStepData : StepData = {...stepData, status: "completed", duration: durationMinutes};
+            setStepData(nextStepData); // mark step as completed
+            saveStepDataInSubtask(nextStepData);
             openSubtaskOverview();
         }
     }
