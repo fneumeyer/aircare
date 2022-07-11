@@ -89,7 +89,7 @@ const exampleStepData4: StepData = {
 
 const subtaskEngineCover : SubtaskData = {
     title: "Mastercard #3: Fix Gearing Cover",
-    assignedWorkers: [{ id: "lutian-zhang", name: "Lutian Zhang" }],
+    assignedWorkers: [{ id: "0", name: "Lutian Zhang" }],
     mastercard: "pdf-location",
     subtaskId: 19871512,
     steps: [exampleStepData1, exampleStepData2, exampleStepData3, exampleStepData4],

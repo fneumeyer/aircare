@@ -83,7 +83,7 @@ export function SubtaskOverview(props: Props){
     let { id, } = useParams();
     
     const [addWorkerDialogOpen, setAddWorkerDialogOpen] = React.useState(false);
-    const [workers, setWorkers] = React.useState<Worker[]>([workersAvailable[0]]);
+    const [workers, setWorkers] = React.useState<Worker[]>(subtaskEngineCover.assignedWorkers);
     const [tabIndex, setTabIndex] = React.useState<number>(0);
     const [scaleIndex, setScaleIndex] = React.useState<number>(2); // default value 1.0
     const scalesValues : number[] = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
@@ -94,16 +94,19 @@ export function SubtaskOverview(props: Props){
     const navigate = useNavigate()
     const openStepDetails = useCallback(
         () => {
-        navigate(`/task/${id}/step/${1}`)
+            subtaskEngineCover.assignedWorkers = workers;
+            navigate(`/task/${id}/step/${1}`)
+
         },
-        [id, navigate]
+        [id, navigate, workers]
     );
 
     const openStepDetailsById = useCallback(
         (stepId: number) => {
-        navigate(`/task/${id}/step/${stepId}`)
+            subtaskEngineCover.assignedWorkers = workers;
+            navigate(`/task/${id}/step/${stepId}`)
         },
-        [id, navigate]
+        [id, navigate, workers]
     );
 
     const stateTaskButton : TaskStatus= useMemo(() => {

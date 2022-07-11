@@ -65,7 +65,7 @@ export function QuestionTab(props: QuestionTabProps) {
                     {
                         props.questionData.map((question, index) => {
                             return (
-                                <div>
+                                <div key={"div_" + index}>
                                     <QuestionTextfield textInput={props.textInput} setTextInput={props.setTextInput} key={"question-textfield-"+index} questionData={question} state={props.questionState} setUserResponse={(correctAnswer)=>setUserResponse(index, correctAnswer)}/>
                                     <QuestionCheckbox {...props} key={"question-checkbox-"+index} question={question} state={props.questionState} setUserResponse={(correctAnswer)=>setUserResponse(index, correctAnswer)}/>
                                 </div>
