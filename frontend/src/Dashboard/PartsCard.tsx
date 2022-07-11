@@ -4,7 +4,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
-type PartsData = {
+export type PartsData = {
     name: string,
     similarItem?: string,
 }

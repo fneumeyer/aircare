@@ -24,9 +24,11 @@ export function QuestionTab(props: QuestionTabProps) {
     
     
     //let [answerOptions, setAnswerOptions] = useState<AnswerOption[]>(generateAnswerOptions(props.questionData[props.questionIndex]));
-    let currentQuestion = props.questionData[props.questionIndex];
+    
 
     if(props.questionState==="question-mode" || props.questionState === "answer-mode") {
+        if(props.questionIndex < props.questionData.length) {
+        let currentQuestion = props.questionData[props.questionIndex];
         return (
             <div className="root-container">
                     <div className="question-header-container">
@@ -44,22 +46,37 @@ export function QuestionTab(props: QuestionTabProps) {
                     </div>
             </div>
         );
+        }else {
+            return(
+                <div className="root-container">
+                    <h2>No Questions available</h2>
+                </div>
+            );
+        }
     }else {
         // Answer Mode: Render all Questions with answers
-        return (
-            <div className="root-container">
-                {
-                    props.questionData.map((question, index) => {
-                        return (
-                            <div>
-                                <QuestionTextfield textInput={props.textInput} setTextInput={props.setTextInput} key={"question-textfield-"+index} questionData={question} state={props.questionState} setUserResponse={(correctAnswer)=>setUserResponse(index, correctAnswer)}/>
-                                <QuestionCheckbox {...props} key={"question-checkbox-"+index} question={question} state={props.questionState} setUserResponse={(correctAnswer)=>setUserResponse(index, correctAnswer)}/>
-                            </div>
-                        );
-                    })
-                }
-            </div>
-        );
+        if(props.questionData.length > 0) {
+            return (
+                <div className="root-container">
+                    {
+                        props.questionData.map((question, index) => {
+                            return (
+                                <div>
+                                    <QuestionTextfield textInput={props.textInput} setTextInput={props.setTextInput} key={"question-textfield-"+index} questionData={question} state={props.questionState} setUserResponse={(correctAnswer)=>setUserResponse(index, correctAnswer)}/>
+                                    <QuestionCheckbox {...props} key={"question-checkbox-"+index} question={question} state={props.questionState} setUserResponse={(correctAnswer)=>setUserResponse(index, correctAnswer)}/>
+                                </div>
+                            );
+                        })
+                    }
+                </div>
+            );
+        }else {
+            return (
+                <div className="root-container">
+                    <h2>No Questions available</h2>
+                </div>
+            )
+        }
     }
 
     function setUserResponse(index: number, correctAnswer: boolean) {

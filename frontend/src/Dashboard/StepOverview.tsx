@@ -9,12 +9,15 @@ import { Document, Page } from 'react-pdf/dist/esm/entry.webpack5';
 import { PDFDocumentProxy } from 'react-pdf/node_modules/pdfjs-dist';
 import sample from './../assets/regal.pdf';
 import { ToolsCard } from "./ToolsCard";
-import { PartsCard } from "./PartsCard";
+import { PartsCard, PartsData } from "./PartsCard";
 import { DescriptionCard } from "./DescriptionCard";
 import { Annotation } from "./Annotation";
-import { AnswerOption, exampleQuestions, generateAnswerOptions, QuestionData, QuestionState } from "../Questions/QuestionType";
+import { AnswerOption, generateAnswerOptions, QuestionData, QuestionState } from "../Questions/QuestionType";
 import { QuestionTab } from "../Questions/QuestionTab";
 import { WikiTab } from "../Wiki/WikiTab";
+import { WikiCardContent } from "../Wiki/WikiCard";
+import { exampleStepData1, subtaskEngineCover } from "../data/StepStaticData";
+import { SubtaskData } from "./SubtaskOverview";
 
 
 type Props = {
@@ -95,10 +98,27 @@ const StyledLink = styled(Link)(({theme}) => ({
 }))
 
 // step overview data
-const toolsData = ["Torque Wrench"]
 
-const partsData = [{name: "Engine Cover Part 3", similarItem: "Engine Cover Part 4"}, {name: "Engine Cover Part 7"}]
-const descriptionData =  ["Fix the Engine Cover Part 7 with a torque wrench (25 Nm).", "Then, continue with Engine Cover part 3."]
+type StepStatus = "pending" | "work-in-progress" | "completed"
+
+export type StepData = {
+    subtaskId: number,
+    stepId: number,
+    title: string,
+    context: string,
+    toolsData: string[],
+    partsData: PartsData[],
+    descriptionData: string[],
+    relevantPages: number[], // not yet utilized property
+    questionData: QuestionData[],
+    wikiEntries: WikiCardContent[],
+    status: StepStatus,
+    duration: number,
+    correctResponses: number,
+    totalResponses: number,
+}
+
+
 
 export function StepOverview(props: Props){
     let { id, stepId } = useParams();
@@ -109,12 +129,18 @@ export function StepOverview(props: Props){
     const scaleTexts = ["50%", "75%",  "100%", "125%", "150%", "200%"];
     const [numPages, setNumPages] = React.useState<number>(0);
     const [pageNumber, setPageNumber] = React.useState(samplePageNumber); // start at 0
-    // for questions
-    let [questionState, setQuestionState] = React.useState<QuestionState>("question-mode");
-    let [questionData, setQuestionData] = React.useState<QuestionData[]>(exampleQuestions);
+    // important data for this screen
+    let [subtaskData, setSubtaskData] = React.useState<SubtaskData>(initSubtaskData());
+    let [stepData, setStepData] = React.useState<StepData>(initStepData(Number(stepId)));
+    // for questions and user input
+
+    let [questionData, setQuestionData] = React.useState<QuestionData[]>(initQuestionData());
+    let [questionState, setQuestionState] = React.useState<QuestionState>(initQuestionState());
     let [currentQuestionIndex, setCurrentQuestionIndex] = React.useState<number>(0);
-    let [answerOptions, setAnswerOptions] = React.useState<AnswerOption[]>(generateAnswerOptions(questionData[currentQuestionIndex]));
+    let [answerOptions, setAnswerOptions] = React.useState<AnswerOption[]>([]);
     let [textInput, setTextInput] = React.useState<string>("");
+    
+    
 
     const annotationMap = useMemo(() => {
         const map = new Map<number, PDFAnnotation[]>();
@@ -137,6 +163,73 @@ export function StepOverview(props: Props){
     //    },
     //    [id, navigate, stepId]
     //);
+
+    const openSubtaskOverview = useCallback(
+        () => {
+            navigate(`/task/${id}`);
+        }, [id, navigate]
+    
+    );
+
+    const openStep = useCallback(
+        (stepId: number) => {
+            navigate(`/task/${id}/step/${stepId}`);
+            const nextStepData = initStepData(stepId)
+            setStepData(nextStepData);
+            resetData(nextStepData);
+        }, [id, navigate]
+    
+    );
+
+    function initQuestionData() {
+        return stepData.questionData;
+    }
+
+    function initQuestionState() : QuestionState {
+        if(stepData.status === "completed" || stepData.questionData.length === stepData.totalResponses){
+            return "result-mode";
+        }else {
+            return "question-mode"; // TODO: read from step state
+        }
+    }
+    function initAnswerOptions() {
+        if(stepData.questionData.length > 0) {
+            return generateAnswerOptions(stepData.questionData[0]);
+        }else {
+            return [];
+        }
+    }
+
+    function resetData(nextStepData: StepData) {
+        setQuestionData(nextStepData.questionData);
+        setQuestionState(initQuestionState());
+        setCurrentQuestionIndex(0);
+        setTextInput("");
+        
+        setAnswerOptions(initAnswerOptions());
+    }
+
+    function initSubtaskData() {
+        // TODO Add Backend communication here
+        return subtaskEngineCover;
+    }
+
+    function initStepData(stepId: number) : StepData {
+        // TODO Add Backend communication here
+        const currentSubtask = subtaskData;
+        
+        if(stepId >= 1 && stepId <= currentSubtask.steps.length ) {
+            if(currentSubtask.steps[stepId - 1].status === "pending") {
+                currentSubtask.steps[stepId - 1].status = "work-in-progress";
+            }
+            return currentSubtask.steps[stepId - 1];
+        }else{
+            if(currentSubtask.steps[0].status === "pending") {
+                currentSubtask.steps[0].status = "work-in-progress";
+            }
+            return currentSubtask.steps[0];
+        }
+    }
 
     const openMastercardLink = useCallback(
         (page:number) => {
@@ -170,8 +263,8 @@ export function StepOverview(props: Props){
             </div>
             </Grid>
             <Grid item xs="auto"> 
-            <h1>Mastercard #3: Fix Gearing Cover</h1>
-            <h2>Page 3, Step 1: Install Engine Bottom Cover</h2>
+            <h1>{`${subtaskData.title} (${stepId}/${subtaskData.steps.length}) - ${stepData.status}`}</h1>
+            <h2>{stepData.context + ": " + stepData.title}</h2>
                 <Paper>
                 <Tabs value={tabIndex} onChange={handleTabChange} centered>
                     <Tab label="Overview" />
@@ -203,9 +296,9 @@ export function StepOverview(props: Props){
     function renderOverviewTabPanel() {
         return (
             <div>
-                <ToolsCard tools={toolsData}/>
-                <PartsCard parts = {partsData}/>
-                <DescriptionCard description={descriptionData}/>
+                <ToolsCard tools={stepData.toolsData}/>
+                <PartsCard parts = {stepData.partsData}/>
+                <DescriptionCard description={stepData.descriptionData}/>
                 
                 <Grid container spacing={1}>
                     <Grid item xs={4}>
@@ -215,7 +308,7 @@ export function StepOverview(props: Props){
                         <Button fullWidth sx={{margin: 0}} color="actionbuttonblue"  variant="contained" onClick={openQuestions} >VIEW QUESTIONS</Button>
                     </Grid>
                     <Grid item xs={4}>
-                        <Button fullWidth sx={{margin: 0}} color="actionbuttonblue" disabled={false}  variant="contained" onClick={onFinishStepClick}>FINISH STEP</Button>
+                        <Button disabled={questionState !== "result-mode"} fullWidth sx={{margin: 0}} color="actionbuttonblue" variant="contained" onClick={onFinishStepClick}>FINISH STEP</Button>
                     </Grid>
                 </Grid>
             </div>
@@ -234,7 +327,14 @@ export function StepOverview(props: Props){
     }
 
     function openPrevious() {
-        
+        const numStep = Number(stepId);
+        if(numStep > 1) {
+            // go one step back
+            openStep(numStep - 1);
+        }else {
+            // go to overview
+            openSubtaskOverview();
+        }
     }
 
     function onQuestionClick() {
@@ -242,7 +342,14 @@ export function StepOverview(props: Props){
     }
 
     function onFinishStepClick() {
-
+        const numStep = Number(stepId);
+        if(numStep < subtaskData.steps.length) {
+            // go one step forward
+            openStep(numStep + 1);
+        }else {
+            // go to overview
+            openSubtaskOverview();
+        }
     }
 
     function onHeaderClick() {
@@ -358,10 +465,13 @@ export function StepOverview(props: Props){
     function WikiTabPanel() {
         return (
             <div>
-                <WikiTab openLink={openMastercardLink}></WikiTab>
-                <h4>TODO: Display some tips, warnings, changes</h4>
+                <WikiTab setWikiContent={setWikiContent} {...stepData} openLink={openMastercardLink}></WikiTab>
             </div>
         );
+    }
+
+    function setWikiContent(content: WikiCardContent[]) {
+        setStepData({...stepData, wikiEntries: content})
     }
 
 

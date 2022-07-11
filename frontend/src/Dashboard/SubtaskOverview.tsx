@@ -20,9 +20,18 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import SettingsIcon from '@mui/icons-material/Settings';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { AddWorkerDialog } from "./AddWorkerDialog";
+import { StepData } from "./StepOverview";
 
 type Props = {
 
+}
+
+export type SubtaskData = {
+    title: string,
+    assignedWorkers: Worker[],
+    mastercard: string,
+    subtaskId: number,
+    steps: StepData[],
 }
 
 type StepRowType = {
