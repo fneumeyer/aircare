@@ -16,6 +16,7 @@ import MoreIcon from '@mui/icons-material/MoreVert';
 import logo from './assets/images/aircare-logo.png';
 import { useRecoilValue } from 'recoil';
 import { userAtom } from './atoms/user';
+import { Link } from 'react-router-dom';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -180,7 +181,9 @@ export function PrimaryAppBar() {
           >
             AirCare
           </Typography>*/}
-          <img src={logo} alt="AirCare Logo" style={{maxHeight: '50px'}}/>
+          <Link to='/'>
+            <img src={logo} alt="AirCare Logo" style={{maxHeight: '50px'}}/>
+          </Link>          
           {user && <Typography
             variant="h6"
             noWrap
