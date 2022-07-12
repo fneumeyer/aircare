@@ -19,6 +19,9 @@ export function useAuth(){
           authenticated,
           loading: false
       })
+      if(!authenticated) {
+        client.services.users.remove(null);
+      }
     }, 
     [setAuthState]
   )

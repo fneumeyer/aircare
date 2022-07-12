@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -16,7 +16,9 @@ import MoreIcon from '@mui/icons-material/MoreVert';
 import logo from './assets/images/aircare-logo.png';
 import { useRecoilValue } from 'recoil';
 import { userAtom } from './atoms/user';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { useAuth } from './Authentication/useAuth';
+import client from './feathers';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -64,6 +66,8 @@ export function PrimaryAppBar() {
     React.useState<null | HTMLElement>(null);
 
   const user = useRecoilValue(userAtom);
+  const authState = useAuth();
+  const navigate = useNavigate();
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -85,6 +89,13 @@ export function PrimaryAppBar() {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  const handleMenuLogoutClose = useCallback(() => {
+    handleMenuClose();
+    authState.setAuthenticated(false);
+    client.logout();
+    navigate("/login")
+  },[navigate, authState, client])
+
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
     <Menu
@@ -104,6 +115,7 @@ export function PrimaryAppBar() {
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={handleMenuLogoutClose}>Logout</MenuItem>
     </Menu>
   );
 

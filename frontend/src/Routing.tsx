@@ -13,6 +13,7 @@ export function Routing(){
   const {authState} = useAuth()
   const navigate = useNavigate()
 
+
   useEffect(() => {
     if(!authState.authenticated && !authState.loading){
       navigate('/login', {replace: true})
