@@ -91,9 +91,9 @@ export function PrimaryAppBar() {
 
   const handleMenuLogoutClose = useCallback(() => {
     handleMenuClose();
-    authState.setAuthenticated(false);
-    client.logout();
-    navigate("/login")
+    authState.logout();
+    
+    
   },[navigate, authState, client])
 
   const menuId = 'primary-search-account-menu';

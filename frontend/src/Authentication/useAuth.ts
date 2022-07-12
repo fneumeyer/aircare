@@ -17,26 +17,32 @@ export function useAuth(){
     (authenticated: boolean) => {
       setAuthState({
           authenticated,
-          loading: false
+          loading: false,
+          logout: false,
       })
-      if(!authenticated) {
-        client.services.users.remove(null);
-      }
     }, 
     [setAuthState]
+  )
+
+  const logout = useCallback(
+    () => {
+      setAuthState({authenticated: false, loading: false, logout: true}) 
+      client.logout();
+    }, [setAuthState]
   )
 
   
 
   useEffect(() => {
-    if(!authState.authenticated){
+    if(!authState.authenticated && !authState.logout){
       client.reAuthenticate()
       .then((r: AuthResult) => {
         if(r.user){
           setUser(r.user)
           setAuthState({
             authenticated: true,
-            loading: false
+            loading: false,
+            logout: false
           })
         }
       })
@@ -44,7 +50,8 @@ export function useAuth(){
         console.error(r)
         setAuthState({
           authenticated: false,
-          loading: false
+          loading: false,
+          logout: false
         })
       })
     }
@@ -52,6 +59,7 @@ export function useAuth(){
 
   return {
     authState,
-    setAuthenticated
+    setAuthenticated,
+    logout
   }
 }
