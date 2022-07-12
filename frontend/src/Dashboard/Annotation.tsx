@@ -46,7 +46,7 @@ export function Annotation({annotation}: Props){
                     </IconButton>
                   }
                   title={annotation.author}
-                  subheader="June 14, 2022"
+                  subheader="July 1, 2022"
                 />
                 <CardContent>
                   <Grid spacing={2} container>

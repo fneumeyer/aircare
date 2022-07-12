@@ -1,7 +1,7 @@
 import { StepData } from "../Dashboard/StepOverview";
 import { SubtaskData } from "../Dashboard/SubtaskOverview";
-import { exampleQuestions, exampleQuestions4 } from "./QuestionData";
-import { wikiCardChangelog, wikiCardTip, wikiCardWarning } from "./WikiData";
+import { exampleQuestions, exampleQuestions4, exampleQuestions4New } from "./QuestionData";
+import { wikiCardChangelog, wikiCardTip, wikiCardWarning, wikiEntries4New } from "./WikiData";
 
 
 const toolsData = ["Torque Wrench", "Screwdriver"]
@@ -18,6 +18,10 @@ const descriptionData3 =  ["Start with Engine Cover 6, then continue with Engine
 const toolsData4 = ["Headlight", "Screwdriver"]
 const partsData4 = [{name: "10 x Pan Head Screws",}, {name: "Engine Cover 5"}]
 const descriptionData4 = ["Use special pan head screws for Engine Cover 5.", "Recommendation: Use a headlight for better lightning conditions, some spots are difficult to recognize."]
+
+const toolsData4New = ["Torque Wrench"]
+const partsData4New = [{name: "100 x AN8 Steel Bolt", similarItem: "AN8 Aluminium Bolt"}, {name: "Engine Cover 5"}]
+const descriptionData4New = ["Use the torque wrench with to install Engine Cover 5 (25 Nm).", "The covers must not damage nearby pipes and sealings."]
 
 const exampleStepData1 : StepData = {
     subtaskId: 19871512,
@@ -64,8 +68,8 @@ const exampleStepData3: StepData = {
     relevantPages: [12,13],
     questionData: [],
     wikiEntries: [],
-    status: "work-in-progress",
-    duration: 0,
+    status: "completed",
+    duration: 13,
     correctResponses: 0,
     totalResponses: 0
 }
@@ -75,12 +79,12 @@ const exampleStepData4: StepData = {
     stepId: 4,
     title: "Engine Front Covers",
     context: "Page 9-12",
-    toolsData: toolsData4,
-    partsData: partsData4,
-    descriptionData: descriptionData4,
-    relevantPages: [14,15,16],
-    questionData: exampleQuestions4,
-    wikiEntries: [],
+    toolsData: toolsData4New,
+    partsData: partsData4New,
+    descriptionData: descriptionData4New,
+    relevantPages: [9, 10, 11, 12],
+    questionData: exampleQuestions4New,
+    wikiEntries: wikiEntries4New,
     status: "pending",
     duration: 0,
     correctResponses: 0,

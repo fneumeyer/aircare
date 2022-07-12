@@ -11,4 +11,9 @@ const exampleQuestions4 : QuestionData[] = [
     {type: "checkbox", context: "Page 11", title: "Which parts are prone to damages in this step?", correctAnswers: ["Pipes", "Sealings"], incorrectAnswers: ["Cables", ""], answersToShow: 2}
 ]
 
-export {exampleQuestions, exampleQuestions4};
+const exampleQuestions4New : QuestionData[] = [
+    {type: "textfield", context: "Page 10", title: "How many steel bolts are required for the installation of the engine cover?", correctAnswer: 100, unit: "", },
+    {type: "checkbox", context: "Page 11", title: "Which parts are prone to damages in this step?", correctAnswers: ["Pipes", "Sealings"], incorrectAnswers: ["Cables", ""], answersToShow: 3}
+]
+
+export {exampleQuestions, exampleQuestions4, exampleQuestions4New};
