@@ -103,14 +103,12 @@ export const WikiCard = React.memo((props: WikiCardProps) => {
     const inputRef = useRef<any>(null);
 
     const handleExpandClick = () => {
-        console.log("Expanded click")
         setExpanded(!expanded);
     };
 
     
     
     function handleReplyClick() {
-        console.log("reply click")
         setExpanded(true);
         if(inputRef != null && inputRef.current != null) {
         setTimeout(() =>{

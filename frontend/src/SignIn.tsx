@@ -13,8 +13,10 @@ import Container from '@mui/material/Container';
 import React, { useEffect, useMemo, useState } from 'react';
 import client from './feathers';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from './Authentication/useAuth';
+import { AuthResult, useAuth } from './Authentication/useAuth';
 import { AuthState } from './atoms/auth';
+import { userAtom } from "./atoms/user";
+import { useRecoilState } from 'recoil';
 
 function Copyright(props: any) {
   return (
@@ -38,6 +40,8 @@ export interface LocationState {
 export default function SignIn() {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
+  
+  const [user, setUser] = useRecoilState(userAtom)
 
   const {authState, setAuthenticated} = useAuth()
   const location = useLocation()
@@ -57,7 +61,10 @@ export default function SignIn() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     login()
-      .then(() => {
+      .then((response : AuthResult) => {
+        if(response.user) {
+          setUser(response.user); // TODO: improve sign in process
+        }
         setAuthenticated(true)
         navigate(from, {replace: true})
       })

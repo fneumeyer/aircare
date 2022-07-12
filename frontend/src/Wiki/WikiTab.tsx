@@ -15,7 +15,6 @@ type WikiTabProps = {
 
 export function WikiTab(props : WikiTabProps) {
     //const [wikiContent, setWikiContent] = React.useState<WikiCardContent[]>([wikiCardTip, wikiCardWarning, wikiCardChangelog]);
-    console.log("Rerender Tab")
     
     const addComment = useCallback (
         (index: number, comment: CommentData) => {

@@ -8,6 +8,7 @@ import client from "../feathers";
 type AuthResult = {
   user?: IUser
 }
+export type {AuthResult};
 
 export function useAuth(){
   const [authState, setAuthState] = useRecoilState(authAtom)
@@ -26,8 +27,9 @@ export function useAuth(){
 
   const logout = useCallback(
     () => {
-      setAuthState({authenticated: false, loading: false, logout: true}) 
-      client.logout();
+      setAuthState({authenticated: false, loading: false, logout: true}) // set logout flag to avoid re-authentication
+      client.logout(); // avoids reauthentication
+      setUser(undefined); // delete user, updates app bar
     }, [setAuthState]
   )
 
