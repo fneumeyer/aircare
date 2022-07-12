@@ -5,8 +5,8 @@ import { wikiCardChangelog, wikiCardTip, wikiCardWarning, wikiEntries4New } from
 
 
 const toolsData = ["Torque Wrench", "Screwdriver"]
-const partsData = [{name: "Engine Cover Part 3", similarItem: "Engine Cover Part 4"}, {name: "Engine Cover Part 7"}]
-const descriptionData =  ["Fix the Engine Cover Part 7 with a torque wrench (25 Nm).", "Then, continue with Engine Cover part 3.", "At last, install Engine Cover Part 4."]
+const partsData = [{name: "Engine Cover Part 2"}, {name: "Engine Cover Part 3", similarItem: "Engine Cover Part 4"}, {name: "Engine Cover Part 7"}]
+const descriptionData =  ["Fix the Engine Cover Part 7 with a torque wrench (25 Nm).", "Then, continue with Engine Cover part 3.", "At last, install Engine Cover Part 2."]
 
 const partsData2 = [{name: "Engine Cover ", }, ]
 const descriptionData2 =  ["Install engine cover as displayed in the graphics."]
