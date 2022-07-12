@@ -21,7 +21,7 @@ const descriptionData4 = ["Use special pan head screws for Engine Cover 5.", "Re
 
 const toolsData4New = ["Torque Wrench"]
 const partsData4New = [{name: "100 x AN8 Steel Bolt", similarItem: "AN8 Aluminium Bolt"}, {name: "Engine Cover 5"}]
-const descriptionData4New = ["Use the torque wrench with to install Engine Cover 5 (25 Nm).", "The covers must not damage nearby pipes and sealings."]
+const descriptionData4New = ["Use the torque wrench with to install Engine Cover 5 (55 Nm).", "The covers must not damage nearby pipes and sealings."]
 
 const exampleStepData1 : StepData = {
     subtaskId: 19871512,
