@@ -1,11 +1,11 @@
-import { Typography } from "@mui/material";
-import {Link} from 'react-router-dom';
+import { Link, Typography } from "@mui/material";
+
 
 export function Copyright(props: any) {
     return (
       <Typography variant="body2" color="text.secondary" align="center" {...props}>
         {'Copyright © '}
-        <Link color="inherit" to="https://mxmuc.github.io/aircare/">
+        <Link  color="inherit" href="https://mxmuc.github.io/aircare/">
           Aircare
         </Link>{' '}
         {new Date().getFullYear()}
