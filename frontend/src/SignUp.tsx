@@ -1,4 +1,4 @@
-import { Alert, Avatar, Box, Button, Checkbox, Container, CssBaseline, FormControlLabel, Grid, Snackbar, TextField, Typography } from "@mui/material";
+import { Alert, Avatar, Box, Button, Checkbox, Collapse, Container, CssBaseline, FormControlLabel, Grid, IconButton, Snackbar, TextField, Typography } from "@mui/material";
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useState } from "react";
@@ -8,7 +8,7 @@ import { useAuth } from "./Authentication/useAuth";
 import { Copyright } from "./Copyright";
 import client from "./feathers";
 import { IUser } from "backend/src/models/users.model";
-
+import CloseIcon from '@mui/icons-material/Close';
 
 type Props = {
 
@@ -161,27 +161,29 @@ export function SignUp(prop: Props) {
               
             </Grid>
           </Box>
-          <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} open={openSuccess} autoHideDuration={6000} onClose={handleClose}>
-            <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+          <Collapse in={openSuccess}>
+            <Alert onClose={handleClose} severity="success" sx={{ width: '100%', marginTop: "10px"}} action={
+                 <IconButton
+                 aria-label="close"
+                 color="inherit"
+                 size="small"
+                 onClick={() => {
+                   setOpenSuccess(false);
+                 }}
+               > <CloseIcon fontSize="inherit" />
+               </IconButton>
+            }>
                 Account has been successfully created!
             </Alert>
-        </Snackbar>
-        <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} open={openError} autoHideDuration={6000} onClose={handleErrorClose}>
-            <Alert onClose={handleErrorClose} severity="error" sx={{ width: '100%' }}>
+        </Collapse>
+        <Collapse in={openError}>
+            <Alert onClose={handleErrorClose} severity="error" sx={{ width: '100%', marginTop: "10px"}}>
                 {errorText}
             </Alert>
-        </Snackbar>
+        </Collapse>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
       
       </Container>
     );
 }
-
-/**
- <Grid item>
-                <Link color="inherit" to="/signup">
-                  {"Don't have an account? Sign up here"}
-                </Link>
-              </Grid>
- */
