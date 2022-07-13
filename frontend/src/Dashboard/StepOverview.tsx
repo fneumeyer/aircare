@@ -16,10 +16,8 @@ import { AnswerOption, generateAnswerOptions, QuestionData, QuestionState } from
 import { QuestionTab } from "../Questions/QuestionTab";
 import { WikiTab } from "../Wiki/WikiTab";
 import { WikiCardContent } from "../Wiki/WikiCard";
-import { subtaskEngineCover } from "../data/StepStaticData";
-import { TaskData } from "./TaskOverview";
 import { useTaskData } from "./useTaskData";
-import { tasksAtom } from "../atoms/tasks";
+
 
 
 type Props = {
@@ -157,12 +155,6 @@ export function StepOverview(props: Props){
     }, [])
 
     const navigate = useNavigate()
-    //const openQuestions = useCallback(
-    //    () => {
-    //    navigate(`/task/${id}/step/${stepId}/question`)
-    //    },
-    //    [id, navigate, stepId]
-    //);
 
     const setWikiContent = useCallback((
         content: WikiCardContent[]) => {
@@ -180,8 +172,8 @@ export function StepOverview(props: Props){
         (stepId: number) => {
             navigate(`/task/${id}/step/${stepId}`);
             const nextStepData = initStepData(stepId)
-            setStepData(nextStepData);
-            resetData(nextStepData);
+            setStepData(nextStepData); // apply new data locally
+            resetData(nextStepData); // init other local data
         }, [id, navigate, ]
     
     );
@@ -191,8 +183,7 @@ export function StepOverview(props: Props){
         const index = Number(stepId) - 1;
         let list =  task.steps
         list[index] = data
-        
-        setTask({...task, steps: list})
+        setTask({...task, steps: list}) //  apply change to global state
     }
 
     function initQuestionData() {
@@ -222,25 +213,25 @@ export function StepOverview(props: Props){
         // reset user input
         setTextInput("");
         setAnswerOptions(initAnswerOptions());
+        // save any applied local change to global state
+        saveStepDataInSubtask(nextStepData);
     }
 
-    function initSubtaskData() {
-        // TODO Add Backend communication here
-        return subtaskEngineCover;
-    }
 
     function initStepData(stepId: number) : StepData {
         // TODO Add Backend communication here
         const currentSubtask = task; // fetch information from subtask component
         const index = (stepId >= 1 && stepId <= currentSubtask.steps.length)?stepId - 1 : 0;
+        const stepDataNext = currentSubtask.steps[index]
         // change status, if certain conditions apply
-        if(currentSubtask.steps[index].status === "pending") {
-            currentSubtask.steps[index].status = "work-in-progress";
+        if(stepDataNext.status === "pending") {
+            stepDataNext.status = "work-in-progress";
         }
-        if(currentSubtask.steps[index].status === "work-in-progress" && currentSubtask.steps[index].questionData.length === currentSubtask.steps[index].totalResponses) {
-            currentSubtask.steps[index].status = "completed";
+        if(stepDataNext.status === "work-in-progress" && stepDataNext.questionData.length === stepDataNext.totalResponses) {
+            stepDataNext.status = "completed";
         }
-        return currentSubtask.steps[index];
+        saveStepDataInSubtask(stepDataNext);
+        return stepDataNext;
         
     }
 
@@ -392,10 +383,6 @@ export function StepOverview(props: Props){
             saveStepDataInSubtask(nextStepData);
             openSubtaskOverview();
         }
-    }
-
-    function onHeaderClick() {
-        console.log("Hello")
     }
 
     function MastercardTabPanel({

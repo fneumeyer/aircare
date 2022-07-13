@@ -22,7 +22,6 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { AddWorkerDialog } from "./AddWorkerDialog";
 import { StepData } from "./StepOverview";
 import {theme} from '../theme'
-//import { subtaskEngineCover } from "../data/StepStaticData";
 import { useTaskData } from "./useTaskData";
 
 type Props = {
@@ -94,12 +93,6 @@ export function TaskOverview(props: Props){
     const scaleTexts = ["50%", "75%",  "100%", "125%", "150%", "200%"];
     const [numPages, setNumPages] = React.useState<number>(0);
     const [pageNumber, setPageNumber] = React.useState(0); // start at 0
-
-    const idNotUndef = useMemo(
-        () => {
-            return id?id:"0"
-        }, [id]
-    )
 
     const navigate = useNavigate()
     const openStepDetails = useCallback(

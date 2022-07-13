@@ -41,7 +41,6 @@ export function Question (prop: Props) {
                     <span id="question-section-text">{currentQuestion.context}</span>
                     <span id="question-position-text">{"Question " + (currentQuestionIndex+1) + "/" + questionData.length}</span>
                 </div>
-                <h2>{currentQuestion.title}</h2>
                 {<QuestionTextfield textInput={textInput} setTextInput={setTextInput} questionData={currentQuestion} state={questionState} setUserResponse={(correctAnswer)=>setUserResponse(currentQuestionIndex, correctAnswer)}/>}
                 {<QuestionCheckbox  answerOptions={answerOptions} setAnswerOptions={setAnswerOptions} key={"question-checkbox-"+currentQuestionIndex}  question={currentQuestion} state={questionState} setUserResponse={(correctAnswer)=>setUserResponse(currentQuestionIndex, correctAnswer)}/>}
                 
