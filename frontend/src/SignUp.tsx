@@ -49,8 +49,14 @@ export function SignUp(prop: Props) {
                 }
                 setAuthenticated(true);
                 navigate("/");
-            }catch(error) {
-                console.log(error)
+            }catch(error:any) {
+                console.log(error);
+                if(error !== undefined && error.message) {
+                    setErrorText(`${error.message}`);
+                }else{
+                    setErrorText(error);
+                }
+                setOpenError(true);
             }
         }else{
             setErrorText("Please fill in all required textfields");
@@ -93,6 +99,7 @@ export function SignUp(prop: Props) {
           <TextField
               margin="normal"
               required
+              fullWidth
               id="firstname"
               label="First name"
               name="firstname"
@@ -104,6 +111,7 @@ export function SignUp(prop: Props) {
             <TextField
               margin="normal"
               required
+              fullWidth
               id="lastname"
               label="Last name"
               name="lastname"
