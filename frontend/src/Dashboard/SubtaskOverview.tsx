@@ -308,7 +308,6 @@ export function SubtaskOverview(props: Props){
 
     function onViewSubtaskClick(index: number) {
         if(subtaskEngineCover.steps[index].status !== "pending") {
-            console.log(index, subtaskEngineCover.steps[index].status)
             openStepDetailsById(index+1);
         }
     }
