@@ -18,6 +18,7 @@ import { AuthState } from './atoms/auth';
 import { userAtom } from "./atoms/user";
 import { useRecoilState } from 'recoil';
 import { Copyright } from './Copyright';
+import { Alert, Collapse } from '@mui/material';
 
 
 
@@ -32,6 +33,9 @@ export default function SignIn() {
   const [password, setPassword] = useState<string>('')
   
   const [user, setUser] = useRecoilState(userAtom)
+
+  const [errorText, setErrorText] = useState<string>('');
+  const [openError, setOpenError] = useState<boolean>(false);
 
   const {authState, setAuthenticated} = useAuth()
   const location = useLocation()
@@ -58,7 +62,15 @@ export default function SignIn() {
         setAuthenticated(true)
         navigate(from, {replace: true})
       })
-      .catch(e => console.log(e))
+      .catch(e => {
+        console.log(e);
+        if(e !== undefined && e.message) {
+          setErrorText(e.message);
+        }else {
+          setErrorText(e);
+        }
+        setOpenError(true);
+      })
   };
 
   const login = async () => {
@@ -76,6 +88,13 @@ export default function SignIn() {
       });
     }
   };
+
+  const handleErrorClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+        return;
+    }
+    setOpenError(false)
+}
 
   return (
       <Container component="main" maxWidth="xs">
@@ -144,6 +163,11 @@ export default function SignIn() {
               </Grid>
             </Grid>
           </Box>
+          <Collapse in={openError}>
+            <Alert onClose={handleErrorClose} severity="error" sx={{ width: '100%', marginTop: "10px"}}>
+                {errorText}
+            </Alert>
+        </Collapse>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
