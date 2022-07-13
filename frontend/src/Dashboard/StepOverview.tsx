@@ -194,7 +194,7 @@ export function StepOverview(props: Props){
     function applyDuration(data: StepData):StepData {
         // apply duration counter
         const duration =  (Date.now() - startTime) / 60000 ; 
-        const durationMinutes = (data.duration === 0 && questionState === "result-mode")? Math.ceil(duration) : data.duration;
+        const durationMinutes = (data.duration === 0 && (questionState === "result-mode" || data.totalResponses === data.questionData.length))? Math.ceil(duration) : data.duration;
         return {...data, duration: durationMinutes};
     }
 
