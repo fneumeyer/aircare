@@ -1,3 +1,3 @@
 node_modules
-backend/tsconfig.tsbuildinfo
 *.tsbuildinfo
+backend/tsconfig.tsbuildinfo

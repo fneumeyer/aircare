@@ -4,6 +4,7 @@ import client from '../feathers';
 export type AuthState = {
   authenticated: boolean
   loading: boolean
+  logout: boolean
 }
 
 export const authAtom = atom<AuthState>({
@@ -11,6 +12,7 @@ export const authAtom = atom<AuthState>({
     // get initial state from local storage to enable user to stay logged in
     default: {
       authenticated: false,
-      loading: true
+      loading: true,
+      logout: false,
     }
 });

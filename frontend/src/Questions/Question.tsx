@@ -1,37 +1,30 @@
-import { Button, Checkbox, FilledInput, FormControl, FormControlLabel, InputAdornment, TextField } from "@mui/material";
+import { Button, Checkbox, FilledInput, FormControl, FormControlLabel, InputAdornment, Card, TextField } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { exampleQuestions } from "../data/QuestionData";
 import "./../App.css"
+import { QuestionCheckbox } from "./QuestionCheckbox";
+import { QuestionTextfield } from "./QuestionTextfield";
+import { AnswerOption, QuestionData, QuestionState, applyUserResponse, generateAnswerOptions } from "./QuestionType";
 
 type Props = {
 
 };
-type QuestionType = "textfield" | "checkbox" | "step-order";
 
-// TODO: Is caseSensitive Attribute required for textfield string answers?
-type QuestionData = {type: "textfield", stepLocation: string, title: string, correctAnswer: string | number, unit: string, } |
-    {type: "checkbox", stepLocation: string, title: string, correctAnswers: string[], incorrectAnswers: string[], answersToShow: number, }
-    
-
-type AnswerOption = {text: string, isCorrect: boolean, userValue: boolean}; // for checkbox state management
-type QuestionState = "answer-mode" | "question-mode";
-
+// old component, functions might not work as intended
+// new component: QuestionTab
 export function Question (prop: Props) {
     let { id, stepId } = useParams();
     let [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
-
-
-    const exampleQuestions : QuestionData[] = [{type: "textfield", stepLocation: "Page 3: Section 2", title: "Please specify the used torque for this step: ", correctAnswer: 25, unit: "Nm"},
-        {type: "checkbox", stepLocation: "Page 3: Section 2", title: "Which of the following parts are used in the next step?", correctAnswers: ["Engine Cover Part 3", "Engine Cover Part 7"], incorrectAnswers: ["Engine Cover Part 1", "Engine Cover Part 5"], answersToShow: 4,},
-    ];
+    
+    let [textInput, setTextInput] = useState<string>("");
+    
 
     let [questionData, setQuestionData] = useState<QuestionData[]>(exampleQuestions);
     let [questionState, setQuestionState] = useState<QuestionState>("question-mode");
     let currentQuestion = questionData[currentQuestionIndex];
-    let [answerOptions, setAnswerOptions] = useState<AnswerOption[]>(initCurrentQuestion(0));
-    let [textInput, setTextInput] = useState<string>("");
-    let [solutionText, setSolutionText] = useState<string>("");
 
+    let [answerOptions, setAnswerOptions] = useState<AnswerOption[]>(generateAnswerOptions(questionData[currentQuestionIndex]));
 
     const navigate = useNavigate()
     const openStepOverview = useCallback(
@@ -42,17 +35,15 @@ export function Question (prop: Props) {
     );
 
     return (
-        // TODO: Replace placeholder data
         <div className="root-container">
                 <h1>Mastercard #3: Engine Covers</h1>
                 <div className="question-header-container">
-                    <span id="question-section-text">{currentQuestion.stepLocation}</span>
+                    <span id="question-section-text">{currentQuestion.context}</span>
                     <span id="question-position-text">{"Question " + (currentQuestionIndex+1) + "/" + questionData.length}</span>
                 </div>
-                <h2>{currentQuestion.title}</h2>
-                {renderQuestionTextfield()}
-                {renderQuestionCheckbox()}
-                {(questionState === "answer-mode") ? <h2> {solutionText}</h2> : null}
+                {<QuestionTextfield textInput={textInput} setTextInput={setTextInput} questionData={currentQuestion} state={questionState} setUserResponse={(correctAnswer)=>setUserResponse(currentQuestionIndex, correctAnswer)}/>}
+                {<QuestionCheckbox  answerOptions={answerOptions} setAnswerOptions={setAnswerOptions} key={"question-checkbox-"+currentQuestionIndex}  question={currentQuestion} state={questionState} setUserResponse={(correctAnswer)=>setUserResponse(currentQuestionIndex, correctAnswer)}/>}
+                
                 <div className="button-bottom-container">
                     <div className="button-bottom-container-inner">
                     {renderButtons()}
@@ -61,44 +52,20 @@ export function Question (prop: Props) {
         </div>
     );
 
+
+    function setUserResponse(index: number, correctAnswer: boolean) {
+        setQuestionData(applyUserResponse(questionData, index, correctAnswer));
+    }
     
     // event to submit an answer
     function onSubmitClick() {
         setQuestionState("answer-mode");
-        if(currentQuestion.type === "textfield") {
-            if(typeof(currentQuestion.correctAnswer) === "number") {
-                // user input value must have a certain precision (0.00001)
-                if(Math.abs(currentQuestion.correctAnswer - Number(textInput)) < 0.00001) {
-                    setSolutionText("The answer is correct!");
-                }else {
-                    setSolutionText("The answer is incorrect! Correct Value: " + currentQuestion.correctAnswer + " " + currentQuestion.unit);
-                }
-
-            }else if(typeof(currentQuestion.correctAnswer) === "string") {
-                // string answer is case sensitive
-                if(currentQuestion.correctAnswer === textInput) {
-                    setSolutionText("The answer is correct!");
-                }else {
-                    setSolutionText("The answer is incorrect! Correct Value: " + currentQuestion.correctAnswer);
-                }
-            }
-        }else if(currentQuestion.type === "checkbox") {
-            // count amount of correct answers
-            const counterCorrectAnswers : number = answerOptions.filter(item => item.isCorrect === item.userValue).length;
-            if(counterCorrectAnswers === 0) {
-                setSolutionText("The answer is incorrect!");
-            }else if(counterCorrectAnswers < answerOptions.length) {
-                setSolutionText("The answer is partially correct! (" + counterCorrectAnswers + "/" + answerOptions.length + ")");
-            }else {
-                setSolutionText("The answer is correct!");
-            }
-        }
+        
     }
     function onNextClick() {
         // check whether next question is available
         if(currentQuestionIndex + 1 < questionData.length) {
             const nextValue = currentQuestionIndex + 1;
-            setAnswerOptions(initCurrentQuestion(nextValue));
             setCurrentQuestionIndex(nextValue);
             setQuestionState("question-mode")
         }else {
@@ -106,10 +73,6 @@ export function Question (prop: Props) {
             // switch to task screen
             openStepOverview();
         }
-    }
-
-    function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-        setTextInput(event.target.value);
     }
 
     function renderButtons() {
@@ -120,42 +83,6 @@ export function Question (prop: Props) {
         }
     }
 
-    function renderQuestionTextfield() {
-        if(currentQuestion.type === "textfield")
-            return (
-                <div className="question-input-container">
-                    <FormControl sx={{ m: 1, width: '25ch' }} variant="filled" disabled={questionState=== "answer-mode"}>
-                    <FilledInput
-                        id="question-text-input" 
-                        endAdornment={<InputAdornment position="end">{currentQuestion.unit}</InputAdornment>}
-                        value={textInput}
-                        onChange={handleChange}
-                    />
-                    </FormControl>
-                    
-                </div>
-            );
-            //<span id="question-unit-text">{currentQuestion.unit}</span>
-    }
-
-    // Shuffle array - https://stackoverflow.com/a/2450976
-    function shuffle(array: AnswerOption[]) {
-        let currentIndex = array.length,  randomIndex;
-      
-        // While there remain elements to shuffle.
-        while (currentIndex != 0) {
-      
-          // Pick a remaining element.
-          randomIndex = Math.floor(Math.random() * currentIndex);
-          currentIndex--;
-      
-          // And swap it with the current element.
-          [array[currentIndex], array[randomIndex]] = [
-            array[randomIndex], array[currentIndex]];
-        }
-      
-        return array;
-      }
 
     function initCurrentQuestion(index: number) {
         console.log("Call")
@@ -180,58 +107,25 @@ export function Question (prop: Props) {
             return [];
         }
     }
-    
-    function handleCheckboxChange(index: number, event: React.ChangeEvent<HTMLInputElement>) {
-        if(questionState === "question-mode") {
-            // if answers are accepted, change value
-            console.log(event.target.checked);
-            let nextArray = answerOptions.slice(0, index)
-            let nextObj : AnswerOption = {...answerOptions[index], userValue: event.target.checked};
-            nextArray.push(nextObj)
-            nextArray = nextArray.concat(answerOptions.slice(index + 1, answerOptions.length))
-            setAnswerOptions(nextArray);
-            console.log(answerOptions);
-        }else {
-           
-        }
-    }
 
-    // className={!isQuestionState && item.userValue=== item.isCorrect ? "chk-correct": (!isQuestionState ? "chk-incorrect" : "")}
-    function renderQuestionCheckbox() {
-        if(currentQuestion.type === "checkbox")
-            return (
-                <div className="question-checkbox-container">
-                    {answerOptions.map(function (item: AnswerOption, index: number) {
-                        return <FormControlLabel 
-                            
-                            label={item.text}
-                            key={"fcl" + item.text + ""}
-                            control = {
-                                <div>
-                                <Checkbox
-                                    disableRipple={questionState === "answer-mode"}
-                                    checked={item.userValue}
-                                    onChange={(event) => handleCheckboxChange(index, event)}
-                                    key={"chk" + item.text + ""}
-                                    size="medium" 
-                                    sx={{ '& .MuiSvgIcon-root': { fontSize: 34 }}} 
-                                />
-                                {(questionState === "answer-mode")? <Checkbox
-                                    disableRipple={true}
-                                    checked={ item.isCorrect}
-                                    onChange={(event) => handleCheckboxChange(index, event)}
-                                    color="success"
-                                    key={"chk2" + item.text + ""}
-                                    size="medium" 
-                                    sx={{ '& .MuiSvgIcon-root': { fontSize: 34 }}} 
-                                /> : null}
-                                </div>
-                                }
-                            />
-                    })}
-                </div>
-            );
-    }
+        // Shuffle array - https://stackoverflow.com/a/2450976
+    function shuffle(array: AnswerOption[]) {
+        let currentIndex = array.length,  randomIndex;
+      
+        // While there remain elements to shuffle.
+        while (currentIndex != 0) {
+      
+          // Pick a remaining element.
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex--;
+      
+          // And swap it with the current element.
+          [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
+        }
+      
+        return array;
+      }
 
 }
 

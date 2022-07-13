@@ -4,30 +4,23 @@ import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
+
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import client from './feathers';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from './Authentication/useAuth';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { AuthResult, useAuth } from './Authentication/useAuth';
 import { AuthState } from './atoms/auth';
+import { userAtom } from "./atoms/user";
+import { useRecoilState } from 'recoil';
+import { Copyright } from './Copyright';
+import { Alert, Collapse } from '@mui/material';
 
-function Copyright(props: any) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+
 
 export interface LocationState {
   from?: {
@@ -38,6 +31,11 @@ export interface LocationState {
 export default function SignIn() {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
+  
+  const [user, setUser] = useRecoilState(userAtom)
+
+  const [errorText, setErrorText] = useState<string>('');
+  const [openError, setOpenError] = useState<boolean>(false);
 
   const {authState, setAuthenticated} = useAuth()
   const location = useLocation()
@@ -57,11 +55,22 @@ export default function SignIn() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     login()
-      .then(() => {
+      .then((response : AuthResult) => {
+        if(response.user) {
+          setUser(response.user); // TODO: improve sign in process
+        }
         setAuthenticated(true)
         navigate(from, {replace: true})
       })
-      .catch(e => console.log(e))
+      .catch(e => {
+        console.log(e);
+        if(e !== undefined && e.message) {
+          setErrorText(e.message);
+        }else {
+          setErrorText(e);
+        }
+        setOpenError(true);
+      })
   };
 
   const login = async () => {
@@ -79,6 +88,13 @@ export default function SignIn() {
       });
     }
   };
+
+  const handleErrorClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+        return;
+    }
+    setOpenError(false)
+}
 
   return (
       <Container component="main" maxWidth="xs">
@@ -136,17 +152,22 @@ export default function SignIn() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
+                <Link color="inherit" to="/login">
                   Forgot password?
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link color="inherit" to="/signup">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
             </Grid>
           </Box>
+          <Collapse in={openError}>
+            <Alert onClose={handleErrorClose} severity="error" sx={{ width: '100%', marginTop: "10px"}}>
+                {errorText}
+            </Alert>
+        </Collapse>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>

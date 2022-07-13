@@ -49,7 +49,10 @@ body{
   }
 }
 
-
+ul {
+  margin-block-start: 0em;
+  margin-block-end: 0em;
+}
 
 #question-section-text {
   text-align: left;
@@ -97,6 +100,14 @@ body{
 }
 .chk-incorrect {
   color: red;
+}
+.result-container {
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+.row-container{
+  display: flex;
+  flex-direction: row;
 }
 
 /* Subtask Overview */

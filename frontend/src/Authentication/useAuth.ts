@@ -8,6 +8,7 @@ import client from "../feathers";
 type AuthResult = {
   user?: IUser
 }
+export type {AuthResult};
 
 export function useAuth(){
   const [authState, setAuthState] = useRecoilState(authAtom)
@@ -17,23 +18,33 @@ export function useAuth(){
     (authenticated: boolean) => {
       setAuthState({
           authenticated,
-          loading: false
+          loading: false,
+          logout: false,
       })
     }, 
     [setAuthState]
   )
 
+  const logout = useCallback(
+    () => {
+      setAuthState({authenticated: false, loading: false, logout: true}) // set logout flag to avoid re-authentication
+      client.logout(); // avoids reauthentication
+      setUser(undefined); // delete user, updates app bar
+    }, [setAuthState]
+  )
+
   
 
   useEffect(() => {
-    if(!authState.authenticated){
+    if(!authState.authenticated && !authState.logout){
       client.reAuthenticate()
       .then((r: AuthResult) => {
         if(r.user){
           setUser(r.user)
           setAuthState({
             authenticated: true,
-            loading: false
+            loading: false,
+            logout: false
           })
         }
       })
@@ -41,7 +52,8 @@ export function useAuth(){
         console.error(r)
         setAuthState({
           authenticated: false,
-          loading: false
+          loading: false,
+          logout: false
         })
       })
     }
@@ -49,6 +61,7 @@ export function useAuth(){
 
   return {
     authState,
-    setAuthenticated
+    setAuthenticated,
+    logout
   }
 }

@@ -1,20 +1,22 @@
 import { useEffect } from "react"
-import { Routes, Route, useNavigate } from "react-router-dom"
+import { Routes, Route, useNavigate, matchPath, useLocation } from "react-router-dom"
 import { useAuth } from "./Authentication/useAuth"
 import { Dashboard } from "./Dashboard/Dashboard"
 import { EngineList } from "./Engines/EngineList"
-import {SubtaskOverview} from "./Dashboard/SubtaskOverview"
+import {TaskOverview} from "./Dashboard/TaskOverview"
 import {Question} from "./Questions/Question"
 import SignIn from "./SignIn"
 import { StepOverview } from "./Dashboard/StepOverview"
+import { SignUp } from "./SignUp"
 
 export function Routing(){
 
   const {authState} = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
-    if(!authState.authenticated && !authState.loading){
+    if(!authState.authenticated && !authState.loading && !matchPath("/signup", location.pathname)){
       navigate('/login', {replace: true})
     }
   }, [authState.authenticated, authState.loading, navigate])
@@ -38,7 +40,7 @@ export function Routing(){
       </Route>
       <Route
         path="/task/:id"
-        element={<SubtaskOverview />}>
+        element={<TaskOverview />}>
       </Route>
       <Route
         path="/task/:id/step/:stepId"
@@ -47,6 +49,10 @@ export function Routing(){
       <Route
         path="/task/:id/step/:stepId/question"
         element={<Question />} >
+      </Route>
+      <Route
+        path="/signup"
+        element={<SignUp/>}>
       </Route>
     </Routes>
   )

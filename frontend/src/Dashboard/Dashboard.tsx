@@ -20,7 +20,7 @@ export function Dashboard(props: Props){
       title: 'Install Outer Tubing',
       description: '',
       engine: new Types.ObjectId('aaaaaaaaaaaaaaaaaaaaaaaa'),
-      taskState: 'inProgress'
+      taskState: 'done'
     },
     {
       title: 'Combustor Assembly',
@@ -32,7 +32,7 @@ export function Dashboard(props: Props){
       title: 'Fixing of Gearing Cover',
       description: '',
       engine: new Types.ObjectId('aaaaaaaaaaaaaaaaaaaaaaaa'),
-      taskState: 'done'
+      taskState: 'inProgress'
     }
   ]
   const [tasks, setTasks] = useState<ITask[]>(tasksData)
