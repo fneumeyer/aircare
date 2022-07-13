@@ -1,7 +1,7 @@
 import { Box, Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@mui/material";
 import React, { useEffect, useMemo } from "react";
 import { useState } from "react";
-import {Worker} from "./SubtaskOverview"
+import {Worker} from "./TaskOverview"
 import {theme} from '../theme'
 
 type Props = {

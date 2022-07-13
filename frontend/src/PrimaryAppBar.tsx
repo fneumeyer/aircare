@@ -66,7 +66,6 @@ export function PrimaryAppBar() {
     React.useState<null | HTMLElement>(null);
 
   const user = useRecoilValue(userAtom);
-  console.log('User undefined ' + (user === undefined))
   const authState = useAuth();
   const navigate = useNavigate();
 

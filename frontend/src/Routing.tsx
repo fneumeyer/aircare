@@ -3,7 +3,7 @@ import { Routes, Route, useNavigate, matchPath, useLocation } from "react-router
 import { useAuth } from "./Authentication/useAuth"
 import { Dashboard } from "./Dashboard/Dashboard"
 import { EngineList } from "./Engines/EngineList"
-import {SubtaskOverview} from "./Dashboard/SubtaskOverview"
+import {TaskOverview} from "./Dashboard/TaskOverview"
 import {Question} from "./Questions/Question"
 import SignIn from "./SignIn"
 import { StepOverview } from "./Dashboard/StepOverview"
@@ -40,7 +40,7 @@ export function Routing(){
       </Route>
       <Route
         path="/task/:id"
-        element={<SubtaskOverview />}>
+        element={<TaskOverview />}>
       </Route>
       <Route
         path="/task/:id/step/:stepId"

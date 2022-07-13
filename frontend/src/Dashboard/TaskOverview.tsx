@@ -22,13 +22,14 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { AddWorkerDialog } from "./AddWorkerDialog";
 import { StepData } from "./StepOverview";
 import {theme} from '../theme'
-import { subtaskEngineCover } from "../data/StepStaticData";
+//import { subtaskEngineCover } from "../data/StepStaticData";
+import { useTaskData } from "./useTaskData";
 
 type Props = {
 
 }
 
-export type SubtaskData = {
+export type TaskData = {
     title: string,
     assignedWorkers: Worker[],
     mastercard: string,
@@ -79,11 +80,14 @@ const workersAvailable: Worker[] = [
     {id: "4", name: "Felix Neumeyer"},
   ]
 
-export function SubtaskOverview(props: Props){
+export function TaskOverview(props: Props){
     let { id, } = useParams();
     
     const [addWorkerDialogOpen, setAddWorkerDialogOpen] = React.useState(false);
-    const [workers, setWorkers] = React.useState<Worker[]>(subtaskEngineCover.assignedWorkers);
+    const {task, setTask} = useTaskData({subtaskId: id?id:"0"});
+    const [workers, setWorkers] = React.useState<Worker[]>(task.assignedWorkers);
+
+    
     const [tabIndex, setTabIndex] = React.useState<number>(0);
     const [scaleIndex, setScaleIndex] = React.useState<number>(2); // default value 1.0
     const scalesValues : number[] = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
@@ -91,26 +95,31 @@ export function SubtaskOverview(props: Props){
     const [numPages, setNumPages] = React.useState<number>(0);
     const [pageNumber, setPageNumber] = React.useState(0); // start at 0
 
+    const idNotUndef = useMemo(
+        () => {
+            return id?id:"0"
+        }, [id]
+    )
+
     const navigate = useNavigate()
     const openStepDetails = useCallback(
         () => {
-            subtaskEngineCover.assignedWorkers = workers;
+           
             navigate(`/task/${id}/step/${1}`)
 
         },
-        [id, navigate, workers]
+        [id, navigate,]
     );
 
     const openStepDetailsById = useCallback(
         (stepId: number) => {
-            subtaskEngineCover.assignedWorkers = workers;
             navigate(`/task/${id}/step/${stepId}`)
         },
-        [id, navigate, workers]
+        [id, navigate,]
     );
 
     const stateTaskButton : TaskStatus= useMemo(() => {
-        const nextStep = subtaskEngineCover.steps.findIndex(stepData => {
+        const nextStep = task.steps.findIndex(stepData => {
             return stepData.status !== "completed";
         })
         if(nextStep === -1) {
@@ -121,7 +130,7 @@ export function SubtaskOverview(props: Props){
         }else {
             return "work-in-progress";
         }
-    }, [subtaskEngineCover.steps]) 
+    }, [task.steps]) 
 
     return <>
         <Grid container sx={{height: '100%'}} spacing={2} direction="column">
@@ -213,7 +222,7 @@ export function SubtaskOverview(props: Props){
     
 
     function onNextSubtaskClick() {
-        const nextStep = subtaskEngineCover.steps.findIndex(stepData => {
+        const nextStep = task.steps.findIndex(stepData => {
             return stepData.status !== "completed";
         })
         if(nextStep === -1) {
@@ -241,7 +250,7 @@ export function SubtaskOverview(props: Props){
                 </TableRow>
                 </TableHead>
                 <TableBody>
-                {subtaskEngineCover.steps.map((rowData, index) => {
+                {task.steps.map((rowData, index) => {
                     
                     const chipColor = () => {
                             switch(rowData.status){
@@ -307,7 +316,7 @@ export function SubtaskOverview(props: Props){
     }
 
     function onViewSubtaskClick(index: number) {
-        if(subtaskEngineCover.steps[index].status !== "pending") {
+        if(task.steps[index].status !== "pending") {
             openStepDetailsById(index+1);
         }
     }
@@ -429,6 +438,9 @@ export function SubtaskOverview(props: Props){
         if(worker && !workers.find(w => w.id === worker.id)){
             setWorkers((workers) => {
                 const newWorkers = workers.concat(worker);
+                // save task in global state
+                let nextData : TaskData = {...task, assignedWorkers: newWorkers}
+                setTask(nextData);
                 return newWorkers;
             })
         }
@@ -442,5 +454,8 @@ export function SubtaskOverview(props: Props){
     function handleDelete(worker: Worker, index: number) {
         let list = workers.filter(w => w.id !== worker.id)
         setWorkers(list)
+         // save task in global state
+         let nextData : TaskData = {...task, assignedWorkers: list}
+         setTask(nextData);
     }
 }

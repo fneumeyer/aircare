@@ -2,22 +2,30 @@ import React, { useCallback, useEffect, useMemo } from 'react'
 import { useRecoilState } from 'recoil';
 import { tasksAtom } from '../atoms/tasks';
 import {subtaskEngineCover} from '../data/StepStaticData'
-import { SubtaskData } from './SubtaskOverview';
+import { QuestionData } from '../Questions/QuestionType';
+import { StepData, StepStatus } from './StepOverview';
+import { TaskData } from './TaskOverview';
 
-type Props = {
+type TaskDataProps = {
   subtaskId: string;
 }
 
-function useTaskData({
+export function useTaskData({
   subtaskId,
-}: Props){
+}: TaskDataProps){
   const [tasksData, setTasksData] = useRecoilState(tasksAtom);
+
+  if(tasksData === undefined) {
+    console.log("error tasksData undefined")
+  }else if(tasksData.subtasks === undefined) {
+    console.log("error tasksData.subtasks undefined")
+  }
 
   useEffect(() => {
     if(!tasksData.subtasks.has(subtaskId)){
       const newData = subtaskEngineCover;
       setTasksData((oldData) => {
-        const newMap = new Map<string, SubtaskData>(oldData.subtasks)
+        const newMap = new Map<string, TaskData>(oldData.subtasks)
         newMap.set(subtaskId, newData);
         return {
           subtasks: newMap
@@ -26,13 +34,19 @@ function useTaskData({
     }
   })
 
-  const data = useMemo(
-    () => tasksData.subtasks.get(subtaskId), 
+  const task = useMemo(
+    () => {
+        const value = tasksData.subtasks.get(subtaskId);
+        if(value) {
+          return value;
+        }
+        return subtaskEngineCover; // return default value
+      },
     []
   )
 
-  const setData = useCallback(
-    (data: SubtaskData) => {
+  const setTask : (data: TaskData) => void = useCallback(
+    (data: TaskData) => {
       setTasksData((oldData) => {
         oldData.subtasks.set(subtaskId, data);
         return oldData;
@@ -41,7 +55,7 @@ function useTaskData({
     []
   )
 
-  return [data, setData];
+  return {task, setTask};
 }
 
 type StepProps = {
@@ -49,11 +63,55 @@ type StepProps = {
   stepId: string;
 }
 
-function useStepData({
+export function useStepData({
   subtaskId,
   stepId,
 }: StepProps){
-  const [subtaskData, setSubtaskData] = useTaskData({subtaskId});
-  
-  
+  const {task, setTask} = useTaskData({subtaskId});
+
+  const stepData = useMemo(() => {
+    const numStepId = Number(stepId);
+    //if(numStepId >= 1 && numStepId <= task.steps.length){
+    return task.steps[numStepId - 1]
+    //}else {
+    //  return task.steps[0]
+    //}
+  }, [stepId, subtaskId])
+
+  const setStepData = useCallback(
+    (stepData: StepData) => {
+      let list = task.steps
+      list[Number(stepId) - 1] = stepData
+      setTask({...task, steps: list})
+    }, [task, stepId, subtaskId,]
+  )
+  const setStepDataStatus = useCallback(
+    (newStatus: StepStatus) => {
+      let list = task.steps
+      list[Number(stepId) - 1] = {...stepData, status: newStatus}
+      setTask({...task, steps: list})
+    }, [task, stepId, subtaskId,]
+  )
+
+  const initNextStepData = useCallback(
+    (stepIdInner: number) => {
+      stepId = stepIdInner.toString();
+    }, [task, stepId, subtaskId,]
+  )
+
+  const setQuestionData = useCallback(
+    (data: QuestionData[]) => {
+      let list = task.steps
+      list[Number(stepId) - 1] = {...stepData, questionData: data}
+      setTask({...task, steps: list})
+    }, [task, stepId, subtaskId,]
+  )
+
+  return {
+    stepData,
+    setStepData,
+    setStepDataStatus,
+    initNextStepData,
+    setQuestionData
+  }
 }

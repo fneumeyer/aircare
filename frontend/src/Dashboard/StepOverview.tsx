@@ -17,7 +17,9 @@ import { QuestionTab } from "../Questions/QuestionTab";
 import { WikiTab } from "../Wiki/WikiTab";
 import { WikiCardContent } from "../Wiki/WikiCard";
 import { subtaskEngineCover } from "../data/StepStaticData";
-import { SubtaskData } from "./SubtaskOverview";
+import { TaskData } from "./TaskOverview";
+import { useTaskData } from "./useTaskData";
+import { tasksAtom } from "../atoms/tasks";
 
 
 type Props = {
@@ -99,7 +101,7 @@ const StyledLink = styled(Link)(({theme}) => ({
 
 // step overview data
 
-type StepStatus = "pending" | "work-in-progress" | "completed"
+export type StepStatus = "pending" | "work-in-progress" | "completed"
 
 type StepData = {
     subtaskId: number,
@@ -128,7 +130,7 @@ export function StepOverview(props: Props){
     const [numPages, setNumPages] = React.useState<number>(0);
     const [pageNumber, setPageNumber] = React.useState(samplePageNumber); // start at 0
     // important data for this screen
-    let [subtaskData, setSubtaskData] = React.useState<SubtaskData>(initSubtaskData());
+    const {task, setTask} = useTaskData({subtaskId: id?id:"0"});
     let [stepData, setStepData] = React.useState<StepData>(initStepData(Number(stepId)));
     // for questions and user input
     let [currentQuestionIndex, setCurrentQuestionIndex] = React.useState<number>(stepData.totalResponses);
@@ -187,7 +189,10 @@ export function StepOverview(props: Props){
     function saveStepDataInSubtask(data: StepData) {
         console.log("Save", data);
         const index = Number(stepId) - 1;
-        subtaskData.steps[index] = data;
+        let list =  task.steps
+        list[index] = data
+        
+        setTask({...task, steps: list})
     }
 
     function initQuestionData() {
@@ -226,7 +231,7 @@ export function StepOverview(props: Props){
 
     function initStepData(stepId: number) : StepData {
         // TODO Add Backend communication here
-        const currentSubtask = subtaskData; // fetch information from subtask component
+        const currentSubtask = task; // fetch information from subtask component
         const index = (stepId >= 1 && stepId <= currentSubtask.steps.length)?stepId - 1 : 0;
         // change status, if certain conditions apply
         if(currentSubtask.steps[index].status === "pending") {
@@ -273,7 +278,7 @@ export function StepOverview(props: Props){
             </div>
             </Grid>
             <Grid item xs="auto"> 
-            <h1>{`${subtaskData.title} (${stepId}/${subtaskData.steps.length})${(stepData.status==="completed")?" - Completed":""}`}</h1>
+            <h1>{`${task.title} (${stepId}/${task.steps.length})${(stepData.status==="completed")?" - Completed":""}`}</h1>
             <h2>{stepData.context + ": " + stepData.title}</h2>
                 <Paper>
                 <Tabs value={tabIndex} onChange={handleTabChange} centered>
@@ -373,7 +378,7 @@ export function StepOverview(props: Props){
         const numStep = Number(stepId);
         const duration =  (Date.now() - startTime) / 60000 ; 
         const durationMinutes = (stepData.duration === 0)? Math.ceil(duration) : stepData.duration;
-        if(numStep < subtaskData.steps.length) {
+        if(numStep < task.steps.length) {
             // go one step forward
            
             const nextStepData : StepData = {...stepData, status: "completed", duration: durationMinutes};

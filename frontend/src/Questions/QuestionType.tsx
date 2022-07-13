@@ -55,7 +55,6 @@ function applyUserResponse(questionData: QuestionData[], index: number, correctR
     if(index >= 0 && index < questionData.length) {
         let nextArray = questionData.slice(0, index);
         nextArray = nextArray.concat({...questionData[index], correctUserResponse: correctResponse}).concat(questionData.slice(index + 1, questionData.length));
-        console.log(index, nextArray);
         return nextArray;
     }else{
         return questionData;

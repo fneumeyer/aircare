@@ -1,5 +1,5 @@
 import { StepData } from "../Dashboard/StepOverview";
-import { SubtaskData } from "../Dashboard/SubtaskOverview";
+import { TaskData } from "../Dashboard/TaskOverview";
 import { exampleQuestions, exampleQuestions4, exampleQuestions4New } from "./QuestionData";
 import { wikiCardChangelog, wikiCardTip, wikiCardWarning, wikiEntries4New } from "./WikiData";
 
@@ -91,7 +91,7 @@ const exampleStepData4: StepData = {
     totalResponses: 0
 }
 
-const subtaskEngineCover : SubtaskData = {
+const subtaskEngineCover : TaskData = {
     title: "Mastercard #3: Fix Gearing Cover",
     assignedWorkers: [{ id: "0", name: "Lutian Zhang" }],
     mastercard: "pdf-location",
