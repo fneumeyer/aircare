@@ -61,7 +61,7 @@ const wikiCardChangelog: WikiCardContent = {
     cardType: "change-notification",
     comments: [],
     points: 25,
-    mastercardLink: [{page: 11, title: "New Graphics"}, {page: 1, title: "Step 1"},],
+    mastercardLink: [{page: 11, title: "New Graphics"}, {page: 6, title: "Step 1"},],
 }
 
 const wikiCardChangelog2: WikiCardContent = {

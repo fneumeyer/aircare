@@ -194,7 +194,7 @@ export function StepOverview(props: Props){
     function applyDuration(data: StepData):StepData {
         // apply duration counter
         const duration =  (Date.now() - startTime) / 60000 ; 
-        const durationMinutes = (stepData.duration === 0)? Math.ceil(duration) : stepData.duration;
+        const durationMinutes = (stepData.duration === 0 && questionState === "result-mode")? Math.ceil(duration) : stepData.duration;
         return {...data, duration: durationMinutes};
     }
 
@@ -232,9 +232,9 @@ export function StepOverview(props: Props){
 
     function initStepData(stepId: number) : StepData {
         // TODO Add Backend communication here
-        const currentSubtask = task; // fetch information from subtask component
-        const index = (stepId >= 1 && stepId <= currentSubtask.steps.length)?stepId - 1 : 0;
-        const stepDataNext = currentSubtask.steps[index]
+        // find current stepData
+        const index = (stepId >= 1 && stepId <= task.steps.length)?stepId - 1 : 0;
+        const stepDataNext = task.steps[index]
         // change status, if certain conditions apply
         if(stepDataNext.status === "pending") {
             stepDataNext.status = "work-in-progress";
@@ -259,6 +259,13 @@ export function StepOverview(props: Props){
         setTabIndex(1);
     }
 
+    function onGoToRoot() {
+        // save duration, if conditions apply
+        console.log("here")
+        const numStepId = Number(stepId);
+        saveStepDataInSubtask(numStepId.toString(), applyDuration(stepData));
+    }
+
 
     const remainingOpenQuestions = (questionState === "result-mode")? 0 : ((questionState === "question-mode")?(questionData.length - currentQuestionIndex) : (questionData.length - currentQuestionIndex - 1));
     return (
@@ -267,12 +274,13 @@ export function StepOverview(props: Props){
         <Grid item xs="auto"> 
             <div style={{marginTop: "5px"}}>
                 <Breadcrumbs aria-label="breadcrumb">
-                    <StyledLink color="inherit" to="/">
+                    <StyledLink color="inherit" to="/" onClick={onGoToRoot}>
                         Home
                     </StyledLink>
                     <StyledLink
                         color="inherit"
                         to={`/task/${id}`}
+                        onClick={onGoToRoot}
                     >
                     Task
                     </StyledLink>
@@ -343,6 +351,7 @@ export function StepOverview(props: Props){
 
     function onSubmitAnswer() {
         // TODO Backend communication
+        const stepVal = stepId?stepId: "1";
         if(stepData.status === "work-in-progress" && currentQuestionIndex < questionData.length) {
             const isCorrect = questionData[currentQuestionIndex].correctUserResponse;
             const totalResp = stepData.totalResponses + 1;
@@ -350,12 +359,12 @@ export function StepOverview(props: Props){
             
             const nextStepData : StepData = {...stepData, questionData: questionData, totalResponses: totalResp, correctResponses: correctResp, status: (totalResp === stepData.questionData.length)?"completed" : "work-in-progress"}
             setStepData(nextStepData);
-            saveStepDataInSubtask(stepId?stepId: "1", nextStepData);
+            saveStepDataInSubtask(stepVal, nextStepData);
             //console.log(nextStepData)
         }else if(stepData.status === "work-in-progress") {
             const nextState : StepData = {...stepData, status: "completed"};
             setStepData(nextState);
-            saveStepDataInSubtask(stepId?stepId: "1", nextState);
+            saveStepDataInSubtask(stepVal, nextState);
         }
         //
     }
@@ -364,11 +373,11 @@ export function StepOverview(props: Props){
         const numStep = Number(stepId);
         if(numStep > 1) {
             // go one step back
-            saveStepDataInSubtask(numStep.toString(), {...stepData, questionData: questionData});
+            saveStepDataInSubtask(numStep.toString(), applyDuration({...stepData, questionData: questionData}));
             openStep(numStep - 1);
         }else {
             // go to overview
-            saveStepDataInSubtask(numStep.toString(), {...stepData, questionData: questionData});
+            saveStepDataInSubtask(numStep.toString(), applyDuration({...stepData, questionData: questionData}));
             openSubtaskOverview();
         }
     }
